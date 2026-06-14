@@ -10,7 +10,7 @@ relying on IPv4 for the remainder of messages to make surrounding node attacks
 
 ## Behavior
 
-When the `--proxy` flag is used, `monerod` sends all external traffic via the
+When the `--proxy` flag is used, `nonod` sends all external traffic via the
 proxy. This includes blockchain syncing, connections to other peers, and update
 checks. However, it treats the proxy as the clearnet zone. It does not connect
 to hidden services over the proxy.
@@ -23,11 +23,11 @@ will only be sent to peers on anonymity networks. If an anonymity network is
 enabled but no peers over an anonymity network are available, an error is
 logged and the transaction is kept for future broadcasting over an anonymity
 network. The transaction will not be broadcast unless an anonymity connection
-is made or until `monerod` is shutdown and restarted with only public
+is made or until `nonod` is shutdown and restarted with only public
 connections enabled.
 
-Anonymity networks can also be used with `monero-wallet-cli` and
-`monero-wallet-rpc` - the wallets will connect to a daemon through a proxy. The
+Anonymity networks can also be used with `nono-wallet-cli` and
+`nono-wallet-rpc` - the wallets will connect to a daemon through a proxy. The
 daemon must provide a hidden service for the RPC itself, which is separate from
 the hidden service for P2P connections.
 
@@ -49,7 +49,7 @@ You may sync the blockchain using a SOCKS4 proxy. Monerod will connect to IPv4
 nodes using this proxy to sync the blockchain.
 
 ```bash
-monerod --proxy 127.0.0.1:9050 --p2p-bind-ip 127.0.0.1
+nonod --proxy 127.0.0.1:9050 --p2p-bind-ip 127.0.0.1
 ```
 
 You can also combine `--proxy` with `--tx-proxy` (see below).
@@ -62,16 +62,16 @@ You may use the below options with or without `--proxy`.
 #### Outbound Connections
 
 Connecting to an anonymous address requires the command line option
-`--tx-proxy` which tells `monerod` the ip/port of a socks proxy provided by a
+`--tx-proxy` which tells `nonod` the ip/port of a socks proxy provided by a
 separate process. On most systems the configuration will look like:
 
 ```bash
-monerod \
+nonod \
     --tx-proxy tor,127.0.0.1:9050,10 \
     --tx-proxy i2p,127.0.0.1:4447
 ```
 
-which tells `monerod` to connect to ".onion" P2P addresses using a socks
+which tells `nonod` to connect to ".onion" P2P addresses using a socks
 proxy at IP 127.0.0.1 port 9050 with a max of 10 outgoing connections and
 ".b32.i2p" P2P addresses using a socks proxy at IP 127.0.0.1 port 4447
 with the default max outgoing connections.
@@ -92,7 +92,7 @@ If you specify `add-exclusive-node` for onion or I2P, make sure to do so for cle
 #### Inbound Connections
 
 Receiving anonymity connections is done through the option
-`--anonymous-inbound`. This option tells `monerod` the inbound address, network
+`--anonymous-inbound`. This option tells `nonod` the inbound address, network
 type, and max connections:
 
 ```bash
@@ -100,11 +100,11 @@ type, and max connections:
 --anonymous-inbound cmeua5767mz2q5jsaelk2rxhf67agrwuetaso5dzbenyzwlbkg2q.b32.i2p,127.0.0.1:18085
 ```
 
-which tells `monerod` that a max of 25 inbound Tor connections are being
-received at address "5tymba6faziy36md5ffy42vatbjzlye4vyr3gyz6lcvdfximnvwpmwqd.onion:18084" and forwarded to `monerod`
+which tells `nonod` that a max of 25 inbound Tor connections are being
+received at address "5tymba6faziy36md5ffy42vatbjzlye4vyr3gyz6lcvdfximnvwpmwqd.onion:18084" and forwarded to `nonod`
 localhost port 18084, and a default max I2P connections are being received at
 address "cmeua5767mz2q5jsaelk2rxhf67agrwuetaso5dzbenyzwlbkg2q.b32.i2p" and
-forwarded to `monerod` localhost port 18085. Using `tx-proxy`(required), these
+forwarded to `nonod` localhost port 18085. Using `tx-proxy`(required), these
 addresses will be shared with peers over the same network type, otherwise your
 peers will not be notified of your onion or I2P address.
 
@@ -115,7 +115,7 @@ to your `anonymous-inbound`.
 #### Wallet RPC
 
 An anonymity network can be configured to forward incoming connections to a
-`monerod` RPC port - which is independent from the configuration for incoming
+`nonod` RPC port - which is independent from the configuration for incoming
 P2P anonymity connections. The anonymity network (Tor/I2P) is
 configured in the same manner as [below](#configuration), except this excludes P2P.
 
@@ -126,7 +126,7 @@ HiddenServicePort 18089 127.0.0.1:18089
 
 Then the wallet will be configured to use a Tor/I2P address:
 ```bash
-monero-wallet-cli \
+nono-wallet-cli \
     --proxy 127.0.0.1:9050 \
     --daemon-address 5tymba6faziy36md5ffy42vatbjzlye4vyr3gyz6lcvdfximnvwpmwqd.onion:18089
 ```
@@ -179,18 +179,18 @@ and will forward "Tor port" 18084 and 18089 to ports 18084 and 18089 of ip 127.0
 
 I2P must be configured with a standard server tunnel. Configuration differs by
 I2P implementation.  
-You can find guides for i2pd [here](https://docs.getmonero.org/running-node/monerod-tori2p/#__tabbed_1_2).
+You can find guides for i2pd [here](https://docs.getmonero.org/running-node/nonod-tori2p/#__tabbed_1_2).
 
 ## Example Node Configurations
 
-Please check the [`monerod` reference](https://docs.getmonero.org/interacting/monerod-reference/#tori2p-and-proxies) for more information about these flags.
+Please check the [`nonod` reference](https://docs.getmonero.org/interacting/nonod-reference/#tori2p-and-proxies) for more information about these flags.
 
 ### Clearnet Only
 
 Allows incoming connections and attempts to port forward with UPnP.
 
 ```bash
-monerod
+nonod
 ```
 
 ### Connect to IPv4 Nodes Over Clearnet and Relay Transactions via Tor
@@ -202,7 +202,7 @@ Tor.
 ```bash
 sudo apt install tor # Or install Tor some other way
 systemctl start tor # Or start Tor manually
-monerod --tx-proxy tor,127.0.0.1:9050,10
+nonod --tx-proxy tor,127.0.0.1:9050,10
 ```
 
 ### Connect To IPv4 Nodes Over Tor Only
@@ -213,7 +213,7 @@ connections. Your ISP will see that you are running Tor, but not Monerod.
 ```bash
 sudo apt install tor # Or install Tor some other way
 systemctl start tor # Or start Tor manually
-monerod --proxy 127.0.0.1:9050 --p2p-bind-ip 127.0.0.1
+nonod --proxy 127.0.0.1:9050 --p2p-bind-ip 127.0.0.1
 ```
 
 ### Connect to IPv4 Nodes Over Tor and Connect to Hidden Services
@@ -223,7 +223,7 @@ will be relayed to hidden services. Your node will not accept any incoming
 connections (including from Tor and I2P).
 
 ```bash
-monerod --proxy 127.0.0.1:9050 \
+nonod --proxy 127.0.0.1:9050 \
     --p2p-bind-ip 127.0.0.1 \
     --tx-proxy tor,127.0.0.1:9050,10 \
     --tx-proxy i2p,127.0.0.1:4447,10
@@ -231,10 +231,10 @@ monerod --proxy 127.0.0.1:9050 \
 
 ### Connect to IPv4 over Tor and Publish Hidden Services
 
-You will need to configure [hidden services manually for Tor and I2P](https://docs.getmonero.org/running-node/monerod-tori2p/#node-configuration).
+You will need to configure [hidden services manually for Tor and I2P](https://docs.getmonero.org/running-node/nonod-tori2p/#node-configuration).
 
 ```bash
-monerod --proxy 127.0.0.1:9050 \
+nonod --proxy 127.0.0.1:9050 \
     --p2p-bind-ip 127.0.0.1 \
     --tx-proxy tor,127.0.0.1:9050,10 \
     --tx-proxy i2p,127.0.0.1:4447,10 \
@@ -273,12 +273,12 @@ more difficult.
 
 ### Intermittent Monero Syncing
 
-If a user only runs `monerod` to send a transaction then quit, this can also
+If a user only runs `nonod` to send a transaction then quit, this can also
 be used by an ISP to link a user to a transaction.
 
 #### Mitigation
 
-Run `monerod` as often as possible to conceal when transactions are being sent.
+Run `nonod` as often as possible to conceal when transactions are being sent.
 Future versions will also have peers that first receive a transaction over an
 anonymity network delay the broadcast to public peers by a randomized amount.
 This will not completely mitigate a user who syncs up sends then quits, in
@@ -310,20 +310,20 @@ signature. This issue was (primarily) raised by @secparam on [Twitter](https://t
 
 #### Mitigation
 
-`monerod` currently selects two outgoing connections every 5 minutes for
+`nonod` currently selects two outgoing connections every 5 minutes for
 transmitting transactions over I2P/Tor. Using outgoing connections prevents an
 adversary from making many incoming connections to obtain information (this
 technique was taken from Dandelion). Outgoing connections also do not have a
 persistent public key identity - the creation of a new circuit will generate
 a new public key identity. The lock time on a change address is ~20 minutes, so
-`monerod` will have rotated its selected outgoing connections several times in
+`nonod` will have rotated its selected outgoing connections several times in
 most cases. However, the number of outgoing connections is typically a small
 fixed number, so there is a decent probability of reuse with the same public
 key identity.
 
 @secparam ([Twitter](https://twitter.com/secparam/status/1153411968147042304)) recommended changing circuits (Tor) as an additional
 precaution. This is likely not a good idea - forcibly requesting Tor to change
-circuits is observable by the ISP. Instead, `monerod` should likely disconnect
+circuits is observable by the ISP. Instead, `nonod` should likely disconnect
 from peers occasionally. Tor will rotate circuits every ~10 minutes, so
 establishing new connections will use a new public key identity and make it
 more difficult for the hidden service to link information. This process will

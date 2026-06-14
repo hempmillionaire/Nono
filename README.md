@@ -508,8 +508,9 @@ See [README.i18n.md](docs/README.i18n.md).
 > used solely for relaying transactions received over local RPC. This provides
 > privacy and better protection against surrounding node (sybil) attacks.
 
-While NONO inherits Monero's Tor support guidance — it isn't designed with Tor, it can be used wrapped with torsocks, by
-setting the following configuration parameters and environment variables:
+NONO is not designed to integrate with Tor directly, but it can be wrapped with torsocks by
+setting the following configuration parameters and environment variables (the same guidance
+that applies to Monero's daemon applies here, since the network stack is inherited):
 
 * `--p2p-bind-ip 127.0.0.1` on the command line or `p2p-bind-ip=127.0.0.1` in
   nonod.conf to disable listening for connections on external interfaces.

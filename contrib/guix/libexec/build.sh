@@ -44,7 +44,7 @@ EOF
 
 ACTUAL_OUTDIR="${OUTDIR}"
 OUTDIR="${DISTSRC}/output"
-DISTNAME="monero-${HOST}-${VERSION}"
+DISTNAME="nono-${HOST}-${VERSION}"
 
 # Use a fixed timestamp for depends builds so hashes match across commits that
 # don't make changes to the build system. This timestamp is only used for depends
@@ -264,7 +264,7 @@ fi
 export SOURCE_DATE_EPOCH=${COMMIT_TIMESTAMP}
 export TAR_OPTIONS="--no-same-owner --owner=0 --group=0 --numeric-owner --mtime='@${SOURCE_DATE_EPOCH}' --sort=name"
 
-GIT_ARCHIVE="${DIST_ARCHIVE_BASE}/monero-source-${VERSION}.tar.gz"
+GIT_ARCHIVE="${DIST_ARCHIVE_BASE}/nono-source-${VERSION}.tar.gz"
 
 # Create the source tarball if not already there
 # This uses `git ls-files --recurse-submodules` instead of `git archive` to make
@@ -273,7 +273,7 @@ if [ ! -e "$GIT_ARCHIVE" ]; then
     mkdir -p "$(dirname "$GIT_ARCHIVE")"
     git ls-files --recurse-submodules \
     | sort \
-    | tar --create --transform "s,^,monero-source-${VERSION}/," --mode='u+rw,go+r-w,a+X' --files-from=- \
+    | tar --create --transform "s,^,nono-source-${VERSION}/," --mode='u+rw,go+r-w,a+X' --files-from=- \
     | gzip -9n > ${GIT_ARCHIVE}
     sha256sum "$GIT_ARCHIVE"
 fi

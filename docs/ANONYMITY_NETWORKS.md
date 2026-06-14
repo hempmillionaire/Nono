@@ -1,12 +1,13 @@
 # Anonymity Networks with NONO
 
 > *Inherited document.* This guide was written for Monero and applies to NONO
-> with only binary-name and port changes (`nonod`, `nono-wallet-cli`, mainnet
-> P2P/RPC ports `24700`/`24701`). The network architecture, proxy flags, and Tor
-> / I2P integration patterns are identical because NONO inherits Monero's
-> P2P stack unchanged. Replace `monerod` examples below mentally — NONO's
-> equivalent is `nonod`. If you spot a remaining Monero-specific assumption
-> in this doc, file an issue.
+> with the daemon-name, hidden-service-dir, and port substitutions already
+> applied in the examples below (`nonod`, `/var/lib/tor/data/nono[-rpc]`,
+> mainnet P2P/RPC `24700`/`24701`, restricted-RPC placeholder `24703`). The
+> network architecture, proxy flags, and Tor / I2P integration patterns are
+> otherwise identical because NONO inherits Monero's P2P stack unchanged.
+> Where the doc links out to upstream Monero documentation, those links are
+> kept as attribution — the operational guidance is the same wire protocol.
 
 Currently only Tor and I2P have been integrated into NONO. The usage of
 these networks is still considered experimental - there are a few pessimistic
@@ -52,8 +53,8 @@ with additional exclusive IPv4 address(es).
 
 ### Blockchain sync
 
-Monerod does not support synchronizing the blockchain over onion or I2P hidden services.
-You may sync the blockchain using a SOCKS4 proxy. Monerod will connect to IPv4
+nonod does not support synchronizing the blockchain over onion or I2P hidden services.
+You may sync the blockchain using a SOCKS4 proxy. nonod will connect to IPv4
 nodes using this proxy to sync the blockchain.
 
 ```bash
@@ -87,9 +88,9 @@ with the default max outgoing connections.
 If desired, peers can be manually specified:
 
 ```bash
---add-exclusive-node 5tymba6faziy36md5ffy42vatbjzlye4vyr3gyz6lcvdfximnvwpmwqd.onion:18084
---add-priority-node 5tymba6faziy36md5ffy42vatbjzlye4vyr3gyz6lcvdfximnvwpmwqd.onion:18084
---add-peer 5tymba6faziy36md5ffy42vatbjzlye4vyr3gyz6lcvdfximnvwpmwqd.onion:18084
+--add-exclusive-node 5tymba6faziy36md5ffy42vatbjzlye4vyr3gyz6lcvdfximnvwpmwqd.onion:24700
+--add-priority-node 5tymba6faziy36md5ffy42vatbjzlye4vyr3gyz6lcvdfximnvwpmwqd.onion:24700
+--add-peer 5tymba6faziy36md5ffy42vatbjzlye4vyr3gyz6lcvdfximnvwpmwqd.onion:24700
 ```
 
 Either option can be listed multiple times, and can specify any mix of Tor,
@@ -104,13 +105,13 @@ Receiving anonymity connections is done through the option
 type, and max connections:
 
 ```bash
---anonymous-inbound 5tymba6faziy36md5ffy42vatbjzlye4vyr3gyz6lcvdfximnvwpmwqd.onion:18084,127.0.0.1:18084,25 \
+--anonymous-inbound 5tymba6faziy36md5ffy42vatbjzlye4vyr3gyz6lcvdfximnvwpmwqd.onion:24700,127.0.0.1:24700,25 \
 --anonymous-inbound cmeua5767mz2q5jsaelk2rxhf67agrwuetaso5dzbenyzwlbkg2q.b32.i2p,127.0.0.1:18085
 ```
 
 which tells `nonod` that a max of 25 inbound Tor connections are being
-received at address "5tymba6faziy36md5ffy42vatbjzlye4vyr3gyz6lcvdfximnvwpmwqd.onion:18084" and forwarded to `nonod`
-localhost port 18084, and a default max I2P connections are being received at
+received at address "5tymba6faziy36md5ffy42vatbjzlye4vyr3gyz6lcvdfximnvwpmwqd.onion:24700" and forwarded to `nonod`
+localhost port 24700, and a default max I2P connections are being received at
 address "cmeua5767mz2q5jsaelk2rxhf67agrwuetaso5dzbenyzwlbkg2q.b32.i2p" and
 forwarded to `nonod` localhost port 18085. Using `tx-proxy`(required), these
 addresses will be shared with peers over the same network type, otherwise your
@@ -128,15 +129,15 @@ P2P anonymity connections. The anonymity network (Tor/I2P) is
 configured in the same manner as [below](#configuration), except this excludes P2P.
 
 ```text
-HiddenServiceDir /var/lib/tor/data/monero-rpc
-HiddenServicePort 18089 127.0.0.1:18089
+HiddenServiceDir /var/lib/tor/data/nono-rpc
+HiddenServicePort 24703 127.0.0.1:24703
 ```
 
 Then the wallet will be configured to use a Tor/I2P address:
 ```bash
 nono-wallet-cli \
     --proxy 127.0.0.1:9050 \
-    --daemon-address 5tymba6faziy36md5ffy42vatbjzlye4vyr3gyz6lcvdfximnvwpmwqd.onion:18089
+    --daemon-address 5tymba6faziy36md5ffy42vatbjzlye4vyr3gyz6lcvdfximnvwpmwqd.onion:24703
 ```
 
 The proxy must match the address type - a Tor proxy will not work properly with
@@ -172,26 +173,26 @@ might look like:
 
 ```text
 # P2P Hidden service
-HiddenServiceDir /var/lib/tor/data/monero
-HiddenServicePort 18084 127.0.0.1:18084  # anonymous-inbound
+HiddenServiceDir /var/lib/tor/data/nono
+HiddenServicePort 24700 127.0.0.1:24700  # anonymous-inbound
 
 # RPC Hidden service
-HiddenServiceDir /var/lib/tor/data/monero-rpc
-HiddenServicePort 18089 127.0.0.1:18089  # rpc-restricted-bind-port
+HiddenServiceDir /var/lib/tor/data/nono-rpc
+HiddenServicePort 24703 127.0.0.1:24703  # rpc-restricted-bind-port
 ```
 
-This will store key information in `/var/lib/tor/data/monero` and `/var/lib/tor/data/monero-rpc`
-and will forward "Tor port" 18084 and 18089 to ports 18084 and 18089 of ip 127.0.0.1, respectively. The file
+This will store key information in `/var/lib/tor/data/nono` and `/var/lib/tor/data/nono-rpc`
+and will forward "Tor port" 24700 and 24703 to ports 24700 and 24703 of ip 127.0.0.1, respectively. The file
 `/usr/lib/tor/data/monero/hostname` will contain the ".onion" address for use with `--anonymous-inbound`, and
-`/var/lib/tor/data/monero-rpc/hostname` will contain the ".onion" address for use with RPC.
+`/var/lib/tor/data/nono-rpc/hostname` will contain the ".onion" address for use with RPC.
 
 I2P must be configured with a standard server tunnel. Configuration differs by
 I2P implementation.  
-You can find guides for i2pd [here](https://docs.getmonero.org/running-node/nonod-tori2p/#__tabbed_1_2).
+You can find guides for i2pd in the upstream Monero docs at https://docs.getmonero.org/running-node/monerod-tor-i2p/ — the wire protocol is identical, only daemon name and ports change.
 
 ## Example Node Configurations
 
-Please check the [`nonod` reference](https://docs.getmonero.org/interacting/nonod-reference/#tori2p-and-proxies) for more information about these flags.
+Please check the upstream Monero daemon reference at https://docs.getmonero.org/interacting/monerod-reference/#tor-i2p-and-proxies for more information about these flags (substitute `nonod` for `monerod` and NONO ports for Monero ports).
 
 ### Clearnet Only
 
@@ -203,7 +204,7 @@ nonod
 
 ### Connect to IPv4 Nodes Over Clearnet and Relay Transactions via Tor
 
-Monerod will connect to IPv4 nodes via clearnet, revealing to your ISP
+nonod will connect to IPv4 nodes via clearnet, revealing to your ISP
 that you are running a Monero node, but your transactions will be relayed over
 Tor.
 
@@ -216,7 +217,7 @@ nonod --tx-proxy tor,127.0.0.1:9050,10
 ### Connect To IPv4 Nodes Over Tor Only
 
 This configuration does not connect to hidden services or accept incoming
-connections. Your ISP will see that you are running Tor, but not Monerod.
+connections. Your ISP will see that you are running Tor, but not nonod.
 
 ```bash
 sudo apt install tor # Or install Tor some other way
@@ -226,7 +227,7 @@ nonod --proxy 127.0.0.1:9050 --p2p-bind-ip 127.0.0.1
 
 ### Connect to IPv4 Nodes Over Tor and Connect to Hidden Services
 
-Your ISP will see that you are running Tor and I2P, but not Monerod. Transactions
+Your ISP will see that you are running Tor and I2P, but not nonod. Transactions
 will be relayed to hidden services. Your node will not accept any incoming
 connections (including from Tor and I2P).
 
@@ -246,13 +247,13 @@ nonod --proxy 127.0.0.1:9050 \
     --p2p-bind-ip 127.0.0.1 \
     --tx-proxy tor,127.0.0.1:9050,10 \
     --tx-proxy i2p,127.0.0.1:4447,10 \
-    --anonymous-inbound=yourlongv3onionaddress.onion:18084,127.0.0.1:18084 \
+    --anonymous-inbound=yourlongv3onionaddress.onion:24700,127.0.0.1:24700 \
     --anonymous-inbound=yourlongb32i2paddress.b32.i2p,127.0.0.1:18085
 ```
 
 ### Connect Exclusively to Hidden Services (avoid IPv4 entirely)
 
-This configuration is not currently supported. Monerod relies on IPv4 to sync
+This configuration is not currently supported. nonod relies on IPv4 to sync
 the blockchain to make Sybil attacks more difficult.
 
 ## Privacy Limitations

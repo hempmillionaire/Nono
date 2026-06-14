@@ -206,11 +206,11 @@ invokes cmake commands as needed.
     this to be worthwhile, the machine should have one core and about 2GB of RAM
     available per thread.
 
-    *Note*: The instructions above will compile the most stable release of the
-    NONO software. If you would like to use and test the most recent software,
-    use `git checkout master`. The master branch may contain updates that are
-    both unstable and incompatible with release software, though testing is always
-    encouraged.
+    *Note*: until NONO publishes a release tag, the instructions above build
+    from the current `master` branch. Once a release tag exists, pinning to
+    it with `git checkout vX.Y.Z` is the safer default; `master` continues to
+    move and may contain updates that are unstable or incompatible with
+    release software.
 
 * The resulting executables can be found in `build/release/bin`
 

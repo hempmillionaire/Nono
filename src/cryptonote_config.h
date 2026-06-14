@@ -232,20 +232,27 @@ namespace config
 {
   // Legacy constant inherited from Monero source; never read by any code path
   // on this branch. Kept defined (and renamed) so the symbol is grep-clean and
-  // future fee-policy work has a single named slot to populate, instead of a
-  // "Change me!" landmine.
+  // future fee-policy work has a single named slot to populate.
   uint64_t const DEFAULT_FEE_ATOMIC_NONO_PER_KB = 500;
   uint8_t const FEE_CALCULATION_MAX_RETRIES = 10;
   uint64_t const DEFAULT_DUST_THRESHOLD = ((uint64_t)2000000000); // 2 * pow(10, 9)
   uint64_t const BASE_REWARD_CLAMP_THRESHOLD = ((uint64_t)100000000); // pow(10, 8)
 
-  // NONO mainnet address prefixes. Single-byte values, distinct from Monero (18/19/42).
-  // The visible leading character of base58-encoded addresses is determined by the
-  // prefix combined with the first 8 bytes of the public key; first-char will be
-  // confirmed at first wallet generation on a built daemon.
-  uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 87;
-  uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 88;
-  uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 99;
+  // NONO mainnet address prefixes. Single-byte values chosen so every base58
+  // address generated under these tags begins with 'N' regardless of pubkey
+  // bytes — see utils/genesis/find_address_prefix.py for the derivation
+  // (verifier script).
+  //
+  // The first character of a Cryptonote base58 address is determined by
+  // floor((tag << 56 | high56(spend_pubkey)) / 58^10). For tag in [126,130]
+  // that quotient is always 21, which is 'N' in the Monero base58 alphabet
+  // ("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"). 127/128/129
+  // are chosen as a clean contiguous trio that does not collide with NONO
+  // testnet/stagenet (125/126/137 and 73/74/85) or Monero mainnet/testnet/
+  // stagenet (18/19/42, 53/54/63, 24/25/36).
+  uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 127;
+  uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 128;
+  uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 129;
   uint16_t const P2P_DEFAULT_PORT = 24700;
   uint16_t const RPC_DEFAULT_PORT = 24701;
   uint16_t const ZMQ_RPC_DEFAULT_PORT = 24702;

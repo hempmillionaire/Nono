@@ -471,7 +471,7 @@ from which cmake was invoked (repository root by default). To run in the
 foreground:
 
 ```bash
-./bin/monerod
+./bin/nonod
 ```
 
 To list all available options, run `./bin/nonod --help`.  Options can be
@@ -483,15 +483,15 @@ of the argument without the leading dashes, for example, `log-level=1`.
 To run in background:
 
 ```bash
-./bin/nonod --log-file monerod.log --detach
+./bin/nonod --log-file nonod.log --detach
 ```
 
 To run as a systemd service, copy
-[monerod.service](utils/systemd/nonod.service) to `/etc/systemd/system/` and
-[monerod.conf](utils/conf/monerod.conf) to `/etc/`. The [example
+[nonod.service](utils/systemd/nonod.service) to `/etc/systemd/system/` and
+[nonod.conf](utils/conf/nonod.conf) to `/etc/`. The [example
 service](utils/systemd/nonod.service) assumes that the user `nono` exists
 and its home is the data directory specified in the [example
-config](utils/conf/monerod.conf).
+config](utils/conf/nonod.conf).
 
 If you're on Mac, you may need to add the `--max-concurrency 1` option to
 nono-wallet-cli, and possibly nonod, if you get crashes refreshing.
@@ -512,7 +512,7 @@ While NONO inherits Monero's Tor support guidance — it isn't designed with Tor
 setting the following configuration parameters and environment variables:
 
 * `--p2p-bind-ip 127.0.0.1` on the command line or `p2p-bind-ip=127.0.0.1` in
-  monerod.conf to disable listening for connections on external interfaces.
+  nonod.conf to disable listening for connections on external interfaces.
 * If you use the wallet with a Tor daemon via the loopback IP (eg, 127.0.0.1:9050),
   then use `--untrusted-daemon` unless it is your own hidden service.
 
@@ -564,7 +564,7 @@ Run the build.
 Once it stalls, enter the following command:
 
 ```bash
-gdb /path/to/nonod `pidof monerod`
+gdb /path/to/nonod `pidof nonod`
 ```
 
 Type `thread apply all bt` within gdb in order to obtain the stack trace
@@ -577,7 +577,7 @@ Enter `echo core | sudo tee /proc/sys/kernel/core_pattern` to stop cores from be
 
 Run the build.
 
-When it terminates with an output along the lines of "Segmentation fault (core dumped)", there should be a core dump file in the same directory as monerod. It may be named just `core`, or `core.xxxx` with numbers appended.
+When it terminates with an output along the lines of "Segmentation fault (core dumped)", there should be a core dump file in the same directory as nonod. It may be named just `core`, or `core.xxxx` with numbers appended.
 
 You can now analyse this core dump with `gdb` as follows:
 
@@ -595,11 +595,11 @@ coredumpctl -1 gdb
 
 #### To run nonod within gdb:
 
-Type `gdb /path/to/monerod`
+Type `gdb /path/to/nonod`
 
 Pass command-line options with `--args` followed by the relevant arguments
 
-Type `run` to run monerod
+Type `run` to run nonod
 
 ### Analysing memory corruption
 
@@ -617,7 +617,7 @@ You can then run the NONO tools normally. Performance will typically halve.
 
 #### valgrind
 
-Install valgrind and run as `valgrind /path/to/monerod`. It will be very slow.
+Install valgrind and run as `valgrind /path/to/nonod`. It will be very slow.
 
 ### LMDB
 

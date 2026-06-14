@@ -700,34 +700,9 @@ namespace nodetool
   std::set<std::string> node_server<t_payload_net_handler>::get_ip_seed_nodes() const
   {
     std::set<std::string> full_addrs;
-    if (m_nettype == cryptonote::TESTNET)
-    {
-      full_addrs.insert("176.9.0.187:28080");
-      full_addrs.insert("192.99.8.110:28080");
-      full_addrs.insert("37.187.74.171:28080");
-      full_addrs.insert("88.99.195.15:28080");
-      full_addrs.insert("5.104.84.64:28080");
-    }
-    else if (m_nettype == cryptonote::STAGENET)
-    {
-      full_addrs.insert("176.9.0.187:38080");
-      full_addrs.insert("192.99.8.110:38080");
-      full_addrs.insert("37.187.74.171:38080");
-      full_addrs.insert("88.99.195.15:38080");
-      full_addrs.insert("5.104.84.64:38080");
-    }
-    else if (m_nettype == cryptonote::FAKECHAIN)
-    {
-    }
-    else
-    {
-      full_addrs.insert("176.9.0.187:18080");
-      full_addrs.insert("88.198.163.90:18080");
-      full_addrs.insert("192.99.8.110:18080");
-      full_addrs.insert("37.187.74.171:18080");
-      full_addrs.insert("88.99.195.15:18080");
-      full_addrs.insert("5.104.84.64:18080");
-    }
+    // NONO seed nodes are intentionally empty until operator nodes are online.
+    // Add fallbacks here once mainnet/testnet/stagenet seeds are deployed.
+    (void)m_nettype;
     return full_addrs;
   }
   //-----------------------------------------------------------------------------------
@@ -2123,15 +2098,10 @@ namespace nodetool
     if (m_nettype != cryptonote::MAINNET)
       return true;
 
-    static const std::vector<std::string> dns_urls = {
-      "blocklist.moneropulse.se"
-    , "blocklist.moneropulse.org"
-    , "blocklist.moneropulse.net"
-    , "blocklist.moneropulse.co"
-    , "blocklist.moneropulse.fr"
-    , "blocklist.moneropulse.de"
-    , "blocklist.moneropulse.ch"
-    };
+    // NONO has no curated blocklist DNS feed yet. Populate with NONO-owned,
+    // DNSSEC-signed TXT-record hosts when one exists; until then the DNS
+    // blocklist is a no-op.
+    static const std::vector<std::string> dns_urls = {};
 
     std::vector<std::string> records;
     if (!tools::dns_utils::load_txt_records_from_dns(records, dns_urls))

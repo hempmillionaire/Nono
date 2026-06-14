@@ -1,139 +1,74 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo/nono-wordmark-light.png">
+    <img alt="NONO" src="docs/assets/logo/nono-wordmark-dark.png" width="360">
+  </picture>
+</p>
+
 # NONO
 
-CPU-mined privacy money. Fair launch — no premine, no dev tax, no founder allocation.
+Copyright (c) 2026, the NONO contributors
+Copyright (c) 2014-2024, The Monero Project (upstream codebase)
+Portions Copyright (c) 2012-2013 The Cryptonote developers
 
-NONO is a fork of Monero. It keeps Monero's RandomX PoW and privacy stack (RingCT, stealth addresses, bulletproofs+) and changes only what's needed to run as its own independent network:
+NONO is a fair-launch, CPU-mined privacy currency. It is a fork of Monero with an independent network, a separate emission curve, and no insider allocations. Privacy properties, the RandomX proof-of-work, and the broader Cryptonote machinery are inherited from Monero unchanged.
 
-- Total emission: 88,888,888 NONO
-- Block time: 60 seconds (Monero is 120s)
-- Decimals: 10 (Monero is 12)
-- Independent network id, magic bytes, ports, address prefixes, seed nodes, and genesis block
-- Daemon: `nonod` &nbsp; Wallet CLI: `nono-wallet-cli` &nbsp; Wallet RPC: `nono-wallet-rpc`
+- **Total emission target:** 88,888,888 NONO (asymptotic, pre-tail)
+- **Block time:** 60 seconds
+- **Decimals:** 10
+- **Proof of work:** RandomX (CPU-friendly, ASIC-resistant)
+- **Initial block reward:** ~42.38 NONO
+- **Tail emission:** 1.45 NONO/block (~1.45 NONO/min)
+- **Privacy:** RingCT, stealth addresses, bulletproofs+ — all unchanged from Monero
+- **No premine. No dev tax. No founder allocation.** The genesis coinbase output is derived from deterministic NUMS pubkeys with no known private key, so it is provably unspendable — see [`utils/genesis/derive_nums_pubkeys.py`](utils/genesis/derive_nums_pubkeys.py).
 
-The rest of this README is inherited from upstream Monero and still applies to NONO's underlying architecture, build process, and privacy primitives. NONO-specific operator docs will land separately.
+## Why NONO
 
----
+Modern privacy currencies tend to centralize over time: GPU mining concentrates hash rate in industrial farms, premines reward early insiders, dev funds nudge governance, and "fair-launch" claims often come with quiet exceptions. NONO is an attempt to push back on all four at once:
 
-Copyright (c) 2014-2024, The Monero Project
-Portions Copyright (c) 2012-2013 The Cryptonote developers.
+- **Fair launch.** No premine. No reserved allocation. No team address. The genesis coinbase is unspendable by construction. Every NONO in circulation was mined.
+- **CPU-friendly.** Inherits Monero's RandomX. The chain is intentionally inhospitable to specialized hardware, and the 60-second block target and slower per-minute emission curve give small miners more time to onboard.
+- **Privacy without theater.** The same RingCT / stealth address / bulletproofs+ stack that secures Monero today. NONO does not invent new cryptography; it inherits a well-reviewed one.
+- **No governance capture.** No foundation. No multisig treasury. Issues and PRs live in this GitHub repository.
 
-## Table of Contents
+## NONO is a fork — not Monero
 
-  - [Development resources](#development-resources)
-  - [Vulnerability response](#vulnerability-response)
-  - [Research](#research)
-  - [Announcements](#announcements)
-  - [Translations](#translations)
-  - [Coverage](#coverage)
-  - [Introduction](#introduction)
-  - [About this project](#about-this-project)
-  - [Supporting the project](#supporting-the-project)
-  - [License](#license)
-  - [Contributing](#contributing)
-  - [Scheduled software upgrades](#scheduled-softwarenetwork-upgrades)
-  - [Release staging schedule and protocol](#release-staging-schedule-and-protocol)
-  - [Compiling Monero from source](#compiling-monero-from-source)
-    - [Dependencies](#dependencies)
-    - [Guix builds](#guix-builds)
-  - [Internationalization](#Internationalization)
-  - [Using Tor](#using-tor)
-  - [Pruning](#Pruning)
-  - [Debugging](#Debugging)
-  - [Known issues](#known-issues)
+NONO ships its own:
 
-## Development resources
+- network id, magic bytes, address prefixes, P2P/RPC/ZMQ ports, and seed-node policy
+- genesis transaction (different output amount, NONO-derived NUMS pubkeys, separate nonce per network)
+- emission curve scaled to 10 decimals (`EMISSION_SPEED_FACTOR_PER_MINUTE = 21`, intentionally a slower/fairer launch curve than Monero's)
+- daemon binary (`nonod`) and wallet binaries (`nono-wallet-cli`, `nono-wallet-rpc`)
+- empty checkpoint table and empty DNS bootstrap lists, pending NONO infrastructure
+- no `donate` command and no hardcoded donation address — fair-launch chain, nothing to donate to
 
-- Web: [getmonero.org](https://getmonero.org)
-- Mail: [dev@getmonero.org](mailto:dev@getmonero.org)
-- GitHub: [https://github.com/monero-project/monero](https://github.com/monero-project/monero)
-- IRC: [#monero-dev on Libera](https://web.libera.chat/#monero-dev)
-- It is HIGHLY recommended that you join the #monero-dev IRC channel if you are developing software that uses Monero. Due to the nature of this open source software project, joining this channel and idling is the best way to stay updated on best practices and new developments in the Monero ecosystem. All you need to do is join the IRC channel and idle to stay updated with the latest in Monero development. If you do not, you risk wasting resources on developing integrations that are not compatible with the Monero network. The Monero core team and community continuously make efforts to communicate updates, developments, and documentation via other platforms – but for the best information, you need to talk to other Monero developers, and they are on IRC. #monero-dev is about Monero development, not getting help about using Monero, or help about development of other software, including yours, unless it also pertains to Monero code itself. For these cases, checkout #monero.
+What NONO does **not** change: RingCT, stealth addresses, bulletproofs+, RandomX, the ring signature scheme, or any other consensus or cryptographic primitive carried over from Monero. NONO inherits these unchanged and gives full credit to upstream.
 
-## Vulnerability response
+## Attribution
 
-- Our [Vulnerability Response Process](https://github.com/monero-project/meta/blob/master/VULNERABILITY_RESPONSE_PROCESS.md) encourages responsible disclosure
-- We are also available via [HackerOne](https://hackerone.com/monero)
+NONO is built directly on the Monero source tree and would not exist without the work of the Monero Project and the Cryptonote authors. Where this README, the source comments, or the citation list refer to research papers, protocol design, or the broader Cryptonote/RingCT/RandomX literature, those references point back to the Monero ecosystem on purpose and should stay that way.
 
-## Research
+- Upstream codebase: https://github.com/monero-project/monero
+- Monero Research Lab publications: cited inline in source where relevant
+- RandomX specification: https://github.com/tevador/RandomX
 
-The [Monero Research Lab](https://src.getmonero.org/resources/research-lab/) is an open forum where the community coordinates research into Monero cryptography, protocols, fungibility, analysis, and more. We welcome collaboration and contributions from outside researchers! Because not all Lab work and publications are distributed as traditional preprints or articles, they may be easy to miss if you are conducting literature reviews for your own Monero research. You are encouraged to get in touch with the Monero research community if you have questions, wish to collaborate, or would like guidance to help avoid unnecessarily duplicating earlier or known work.
-
-The Monero research community is available on IRC in [#monero-research-lab on Libera](https://web.libera.chat/#monero-research-lab), which is also accessible via Matrix.
-
-## Announcements
-
-- You can subscribe to an [announcement listserv](https://lists.getmonero.org) to get critical announcements from the Monero core team. The announcement list can be very helpful for knowing when software updates are needed.
-
-## Translations
-The CLI wallet is available in different languages. If you want to help translate it, see our self-hosted localization platform, Weblate, on [translate.getmonero.org]( https://translate.getmonero.org/projects/monero/cli-wallet/). Every translation *must* be uploaded on the platform, pull requests directly editing the code in this repository will be closed. If you need help with Weblate, you can find a guide with screenshots [here](https://github.com/monero-ecosystem/monero-translations/blob/master/weblate.md).
-&nbsp;
-
-If you need help/support/info about translations, contact the localization workgroup. You can find the complete list of contacts on the repository of the workgroup: [monero-translations](https://github.com/monero-ecosystem/monero-translations#contacts).
-
-## Coverage
-
-| Type      | Status |
-|-----------|--------|
-| Coverity  | [![Coverity Status](https://scan.coverity.com/projects/9657/badge.svg)](https://scan.coverity.com/projects/9657/)
-| OSS Fuzz  | [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/monero.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:monero)
-| Coveralls | [![Coveralls Status](https://coveralls.io/repos/github/monero-project/monero/badge.svg?branch=master)](https://coveralls.io/github/monero-project/monero?branch=master)
-| License   | [![License](https://img.shields.io/badge/license-BSD3-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
-
-## Introduction
-
-Monero is a private, secure, untraceable, decentralised digital currency. You are your bank, you control your funds, and nobody can trace your transfers unless you allow them to do so.
-
-**Privacy:** Monero uses a cryptographically sound system to allow you to send and receive funds without your transactions being easily revealed on the blockchain (the ledger of transactions that everyone has). This ensures that your purchases, receipts, and all transfers remain private by default.
-
-**Security:** Using the power of a distributed peer-to-peer consensus network, every transaction on the network is cryptographically secured. Individual wallets have a 25-word mnemonic seed that is only displayed once and can be written down to backup the wallet. Wallet files should be encrypted with a strong passphrase to ensure they are useless if ever stolen.
-
-**Untraceability:** By taking advantage of ring signatures, a special property of a certain type of cryptography, Monero is able to ensure that transactions are not only untraceable but have an optional measure of ambiguity that ensures that transactions cannot easily be tied back to an individual user or computer.
-
-**Decentralization:** The utility of Monero depends on its decentralised peer-to-peer consensus network - anyone should be able to run the monero software, validate the integrity of the blockchain, and participate in all aspects of the monero network using consumer-grade commodity hardware. Decentralization of the monero network is maintained by software development that minimizes the costs of running the monero software and inhibits the proliferation of specialized, non-commodity hardware.
-
-## About this project
-
-This is the core implementation of Monero. It is open source and completely free to use without restrictions, except for those specified in the license agreement below. There are no restrictions on anyone creating an alternative implementation of Monero that uses the protocol and network in a compatible manner.
-
-As with many development projects, the repository on GitHub is considered to be the "staging" area for the latest changes. Before changes are merged into that branch on the main repository, they are tested by individual developers in their own branches, submitted as a pull request, and then subsequently tested by contributors who focus on testing and code reviews. That having been said, the repository should be carefully considered before using it in a production environment, unless there is a patch in the repository for a particular show-stopping issue you are experiencing. It is generally a better idea to use a tagged release for stability.
-
-**Anyone is welcome to contribute to Monero's codebase!** If you have a fix or code change, feel free to submit it as a pull request directly to the "master" branch. In cases where the change is relatively small or does not affect other parts of the codebase, it may be merged in immediately by any one of the collaborators. On the other hand, if the change is particularly large or complex, it is expected that it will be discussed at length either well in advance of the pull request being submitted, or even directly on the pull request.
-
-## Supporting the project
-
-Monero is a 100% community-sponsored endeavor. If you want to join our efforts, the easiest thing you can do is support the project financially. Both Monero and Bitcoin donations can be made to **donate.getmonero.org** if using a client that supports the [OpenAlias](https://openalias.org) standard. Alternatively, you can send XMR to the Monero donation address via the `donate` command (type `help` in the command-line wallet for details).
-
-The Monero donation address is:  
-`888tNkZrPN6JsEgekjMnABU4TBzc2Dt29EPAvkRxbANsAnjyPbb3iQ1YBRk1UXcdRsiKc9dhwMVgN5S9cQUiyoogDavup3H`  
-Viewkey:  
-`f359631075708155cc3d92a32b75a7d02a5dcf27756707b47a2b31b21c389501`  
-Base address for restoring with address and viewkey:
-`44AFFq5kSiGBoZ4NMDwYtN18obc8AemS33DBLWs3H7otXft3XjrpDtQGv7SqSsaBYBb98uNbr2VBBEt7f2wfn3RVGQBEP3A`  
-
-The Bitcoin donation address is:  
-`1KTexdemPdxSBcG55heUuTjDRYqbC5ZL8H`
-
-Core development funding and/or some supporting services are also graciously provided by [sponsors](https://www.getmonero.org/community/sponsorships/):
-
-[<img width="150" src="https://www.getmonero.org/img/sponsors/tarilabs.png"/>](https://tarilabs.com/)
-[<img width="150" src="https://www.getmonero.org/img/sponsors/symas.png"/>](https://symas.com/)
-[<img width="150" src="https://www.getmonero.org/img/sponsors/macstadium.png"/>](https://www.macstadium.com/)
-
-There are also several mining pools that kindly donate a portion of their fees, [a list of them can be found on our Bitcointalk post](https://bitcointalk.org/index.php?topic=583449.0).
+The Monero Project, Monero Research Lab, and Cryptonote authors are not affiliated with NONO and have not endorsed it. Any bugs introduced by NONO's changes are NONO's responsibility, not theirs.
 
 ## License
 
-See [LICENSE](LICENSE).
+This software inherits Monero's BSD 3-Clause license. See [LICENSE](LICENSE) for the full text. NONO's own changes are released under the same license.
 
 ## Contributing
 
-If you want to help out, see [CONTRIBUTING](docs/CONTRIBUTING.md) for a set of guidelines.
+NONO is a small project. The repository on GitHub is the source of truth, and pull requests against `master` are welcome. Issues and feature requests go in GitHub Issues. There is no Discord, no Telegram, no announcement listserv yet — chain comes first, social later.
+
+If you are submitting a change that touches consensus (anything in `cryptonote_config.h`, the emission formula, the genesis transaction, or protocol versions), please flag it explicitly in the PR description. NONO's policy is to stop touching consensus once the chain is live unless tests prove a change is required.
 
 ## Scheduled software/network upgrades
 
-Monero uses a scheduled software/network upgrade (hard fork) mechanism to implement new features into the Monero software and network. This means that users of Monero (end users and service providers) should run current versions and upgrade their software when new releases are available. Software upgrades occur when new features are developed and implemented in the codebase. Network upgrades occur in tandem with software upgrades that modify the consensus rules of the Monero network. The required software for network upgrades will be available prior to the scheduled network upgrade date. Please check the repository prior to this date for the proper Monero software version. Below is the historical schedule and the projected schedule for the next upgrade.
+NONO starts at block 0 with all features from Monero's v16 protocol active (RingCT, bulletproofs+, view tags, CLSAG, RandomX). No NONO hardforks are scheduled. The table below is the *inherited Monero hardfork history* and is preserved for protocol context only — it does not apply to NONO's chain, because NONO never ran those forks. NONO's first block is its own genesis.
 
-Dates are provided in the format YYYY-MM-DD. The "Minimum" is the software version that follows the new consensus rules. The "Recommended" version may include bug fixes and other new features that do not affect the consensus rules.
+Future NONO upgrades, if any, will be added here once they are designed, tested, and scheduled. The project's stated policy is to stop touching consensus once mainnet is live unless tests prove a change is necessary.
 
 
 | Software upgrade block height  | Date       | Fork version      | Minimum Monero version | Recommended Monero version | Details                                                                            |
@@ -163,7 +98,7 @@ X's indicate that these details have not been determined as of commit date.
 
 Approximately three months prior to a scheduled software upgrade, a branch from master will be created with the new release version tag. Pull requests that address bugs should then be made to both master and the new release branch. Pull requests that require extensive review and testing (generally, optimizations and new features) should *not* be made to the release branch.
 
-## Compiling Monero from source
+## Compiling NONO from source
 
 ### Dependencies
 
@@ -281,7 +216,7 @@ invokes cmake commands as needed.
 
 * Add `PATH="$PATH:$HOME/monero/build/release/bin"` to `.profile`
 
-* Run Monero with `monerod --detach`
+* Run NONO with `nonod --detach`
 
 * **Optional**: build and run the test suite to verify the binaries:
 
@@ -350,7 +285,7 @@ Tested on a Raspberry Pi 5B with a clean installation of Raspberry Pi OS (64-bit
 
 * Run `source $HOME/.profile`
 
-* Run Monero with `monerod --detach`
+* Run NONO with `nonod --detach`
 
 * You may wish to reduce the size of the swap file after the build has finished, and delete the boost directory from your home directory
 
@@ -578,13 +513,13 @@ Packages are available for
 
     ```bash
     # Build image
-    docker build -t monerod .
+    docker build -t nonod .
 
     # Create a directory on the host for the blockchain
     mkdir -p /path/to/bitmonero
 
     # Run it
-    docker run -d --user $(id -u):$(id -g) -v /path/to/bitmonero:/.bitmonero -p 18080:18080 -p 18081:18081 monerod
+    docker run -d --user $(id -u):$(id -g) -v /path/to/nono:/.nono -p 24700:24700 -p 24701:24701 nonod
     ```
 
 Packaging for your favorite distribution would be a welcome contribution!

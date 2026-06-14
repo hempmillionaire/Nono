@@ -84,8 +84,9 @@ DISABLE_VS_WARNINGS(4267)
 
 #define MERROR_VER(x) MCERROR("verify", x)
 
-// used to overestimate the block reward when estimating a per kB to use
-#define BLOCK_REWARD_OVERESTIMATE (10 * 1000000000000)
+// used to overestimate the block reward when estimating a per kB to use.
+// Sized to exceed any NONO block reward (initial ~42.4 NONO, tail 1.45 NONO).
+#define BLOCK_REWARD_OVERESTIMATE (100 * COIN) // 100 NONO
 
 //------------------------------------------------------------------
 Blockchain::Blockchain(tx_memory_pool& tx_pool) :

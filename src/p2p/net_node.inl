@@ -2098,15 +2098,10 @@ namespace nodetool
     if (m_nettype != cryptonote::MAINNET)
       return true;
 
-    static const std::vector<std::string> dns_urls = {
-      "blocklist.moneropulse.se"
-    , "blocklist.moneropulse.org"
-    , "blocklist.moneropulse.net"
-    , "blocklist.moneropulse.co"
-    , "blocklist.moneropulse.fr"
-    , "blocklist.moneropulse.de"
-    , "blocklist.moneropulse.ch"
-    };
+    // NONO has no curated blocklist DNS feed yet. Populate with NONO-owned,
+    // DNSSEC-signed TXT-record hosts when one exists; until then the DNS
+    // blocklist is a no-op.
+    static const std::vector<std::string> dns_urls = {};
 
     std::vector<std::string> records;
     if (!tools::dns_utils::load_txt_records_from_dns(records, dns_urls))

@@ -267,7 +267,9 @@ DNSResolver::DNSResolver() : m_data(new DNSResolverData())
     // should be a valid DNSSEC record, and switch to known good
     // DNSSEC resolvers if verification fails
     bool available, valid;
-    static const char *probe_hostname = "updates.moneropulse.org";
+    // Neutral DNSSEC-signed host used only to probe whether the local resolver
+    // supports DNSSEC; not a Monero/NONO dependency.
+    static const char *probe_hostname = "cloudflare.com";
     auto records = get_txt_record(probe_hostname, available, valid);
     if (!valid)
     {

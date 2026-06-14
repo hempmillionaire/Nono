@@ -1,4 +1,12 @@
-# Monero hard-fork release check-list
+# NONO release check-list
+
+> *Inherited document.* This checklist was written for Monero hard-fork
+> releases. NONO has not done a hard fork yet — and its stated policy
+> is to avoid further consensus changes once mainnet is live unless tests
+> prove one is required. Treat the items below as the *reference template*
+> we would follow if NONO ever needs a coordinated upgrade; many items
+> (testnet preparation, hardware-wallet support, GUI release) are not
+> applicable yet because NONO has no Trezor/Ledger app and no GUI.
 
 - [ ] Security audit
 - [ ] Code audit

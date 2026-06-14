@@ -1,6 +1,14 @@
-# Anonymity Networks with Monero
+# Anonymity Networks with NONO
 
-Currently only Tor and I2P have been integrated into Monero. The usage of
+> *Inherited document.* This guide was written for Monero and applies to NONO
+> with only binary-name and port changes (`nonod`, `nono-wallet-cli`, mainnet
+> P2P/RPC ports `24700`/`24701`). The network architecture, proxy flags, and Tor
+> / I2P integration patterns are identical because NONO inherits Monero's
+> P2P stack unchanged. Replace `monerod` examples below mentally — NONO's
+> equivalent is `nonod`. If you spot a remaining Monero-specific assumption
+> in this doc, file an issue.
+
+Currently only Tor and I2P have been integrated into NONO. The usage of
 these networks is still considered experimental - there are a few pessimistic
 cases where privacy is leaked. The design is intended to maximize privacy of
 the source of a transaction by broadcasting it over an anonymity network, while

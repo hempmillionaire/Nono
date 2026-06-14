@@ -6,7 +6,7 @@ Its syntax follows RFC 3986. See [URI scheme](https://en.wikipedia.org/wiki/URI_
 
 ## TX Scheme
 ```
-monero: [address <string>]
+nono: [address <string>]
 ```
 
 The following parameters can be optionally appended to the resulting URI:
@@ -25,11 +25,11 @@ The following parameters can be optionally appended to the resulting URI:
 
 Thus the resulting URI may look something like this:
 ```
-monero:46BeWrHpwXmHDpDEUmZBWZfoQpdc6HaERCNmx1pEYL2rAcuwufPN9rXHHtyUA4QVy66qeFQkn6sfK8aHYjA3jk3o1Bv16em?tx_amount=239.39014&tx_description=donation
+nono:46BeWrHpwXmHDpDEUmZBWZfoQpdc6HaERCNmx1pEYL2rAcuwufPN9rXHHtyUA4QVy66qeFQkn6sfK8aHYjA3jk3o1Bv16em?tx_amount=239.39014&tx_description=donation
 ```
 or
 ```
-monero:46BeWrHpwXmHDpDEUmZBWZfoQpdc6HaERCNmx1pEYL2rAcuwufPN9rXHHtyUA4QVy66qeFQkn6sfK8aHYjA3jk3o1Bv16em;888tNkZrPN6JsEgekjMnABU4TBzc2Dt29EPAvkRxbANsAnjyPbb3iQ1YBRk1UXcdRsiKc9dhwMVgN5S9cQUiyoogDavup3H?tx_amount=239.39014;132.44&tx_description=donations
+nono:46BeWrHpwXmHDpDEUmZBWZfoQpdc6HaERCNmx1pEYL2rAcuwufPN9rXHHtyUA4QVy66qeFQkn6sfK8aHYjA3jk3o1Bv16em;888tNkZrPN6JsEgekjMnABU4TBzc2Dt29EPAvkRxbANsAnjyPbb3iQ1YBRk1UXcdRsiKc9dhwMVgN5S9cQUiyoogDavup3H?tx_amount=239.39014;132.44&tx_description=donations
 ```
 
 ## Wallet Definition Scheme

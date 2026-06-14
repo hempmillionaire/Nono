@@ -1,5 +1,12 @@
-Monero daemon internationalization
-==================================
+NONO daemon internationalization
+================================
+
+> *Inherited document.* The translation infrastructure described below
+> was set up for Monero and applies to NONO unchanged — same gettext
+> tooling, same `.po` workflow. NONO does not yet maintain its own
+> Weblate or translation contributor pool; until it does, the daemon
+> currently ships English-only.
+
 
 The Monero command line tools can be translated in various languages. If you wish to contribute and need help/support, contact the [Monero Localization Workgroup on Taiga](https://taiga.getmonero.org/project/erciccione-monero-localization/) or come chat on `#monero-translations` (Libera/IRC, riot/matrix, MatterMost)
 

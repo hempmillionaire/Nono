@@ -9,9 +9,12 @@ and the tx_extra pubkey) are derived deterministically from the public seed
 
 by the following recipe:
 
-    candidate(i) = SHA-256("NONO_GENESIS_STRANDED_2026:<net>:<role>:" + str(i))
+    candidate(i) = SHA-256("NONO_GENESIS_STRANDED_2026:<net>:<role>:<i>")
     pubkey       = first candidate i = 0, 1, 2, ...  whose 32 bytes decode as
                    a valid Ed25519 (Cryptonote) point.
+
+    Where <i> is the ASCII decimal representation of the iteration counter
+    (e.g. "0", "1", "2", ...), concatenated as-is to the seed.
 
 Domain strings used:
     <net>  in  { "mainnet", "testnet", "stagenet" }

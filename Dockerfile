@@ -26,8 +26,8 @@ FROM scratch
 
 COPY --from=builder /nono/build/bin/nonod /
 
-EXPOSE 18080
-EXPOSE 18081
+EXPOSE 24700
+EXPOSE 24701
 
 ENTRYPOINT ["/nonod"]
-CMD ["--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=18080", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=18081", "--non-interactive", "--confirm-external-bind"]
+CMD ["--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=24700", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=24701", "--non-interactive", "--confirm-external-bind"]

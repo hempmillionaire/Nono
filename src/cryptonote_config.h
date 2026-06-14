@@ -230,7 +230,11 @@
 // New constants are intended to go here
 namespace config
 {
-  uint64_t const DEFAULT_FEE_ATOMIC_XMR_PER_KB = 500; // Just a placeholder!  Change me!
+  // Legacy constant inherited from Monero source; never read by any code path
+  // on this branch. Kept defined (and renamed) so the symbol is grep-clean and
+  // future fee-policy work has a single named slot to populate, instead of a
+  // "Change me!" landmine.
+  uint64_t const DEFAULT_FEE_ATOMIC_NONO_PER_KB = 500;
   uint8_t const FEE_CALCULATION_MAX_RETRIES = 10;
   uint64_t const DEFAULT_DUST_THRESHOLD = ((uint64_t)2000000000); // 2 * pow(10, 9)
   uint64_t const BASE_REWARD_CLAMP_THRESHOLD = ((uint64_t)100000000); // pow(10, 8)

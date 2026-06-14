@@ -48,7 +48,8 @@ What NONO does **not** change: RingCT, stealth addresses, bulletproofs+, RandomX
 
 NONO is built directly on the Monero source tree and would not exist without the work of the Monero Project and the Cryptonote authors. Where this README, the source comments, or the citation list refer to research papers, protocol design, or the broader Cryptonote/RingCT/RandomX literature, those references point back to the Monero ecosystem on purpose and should stay that way.
 
-- Upstream codebase: https://github.com/hempmillionaire/Nono
+- Upstream codebase: https://github.com/monero-project/monero
+- This NONO repository: https://github.com/hempmillionaire/Nono
 - Monero Research Lab publications: cited inline in source where relevant
 - RandomX specification: https://github.com/tevador/RandomX
 
@@ -60,7 +61,7 @@ This software inherits Monero's BSD 3-Clause license. See [LICENSE](LICENSE) for
 
 ## Contributing
 
-NONO is a small project. The repository on GitHub is the source of truth, and pull requests against `master` are welcome. Issues and feature requests go in GitHub Issues. There is no Discord, no Telegram, no announcement listserv yet — chain comes first, social later.
+NONO is a small project. The repository on GitHub is the source of truth, and pull requests against `master` are welcome. There is no Discord, no Telegram, no announcement listserv yet — chain comes first, social later.
 
 If you are submitting a change that touches consensus (anything in `cryptonote_config.h`, the emission formula, the genesis transaction, or protocol versions), please flag it explicitly in the PR description. NONO's policy is to stop touching consensus once the chain is live unless tests prove a change is required.
 
@@ -193,11 +194,10 @@ invokes cmake commands as needed.
 #### On Linux and macOS
 
 * Install the dependencies
-* Change to the root of the source code directory, change to the most recent release branch, and build:
+* Change to the root of the source code directory and build. NONO has not tagged its first release yet, so for now build from `master`. Once a release tag exists (e.g. `v0.1.0`), `git checkout v0.1.0` before `make`:
 
     ```bash
     cd Nono
-    git checkout release-v0.18
     make
     ```
 
@@ -263,12 +263,11 @@ Tested on a Raspberry Pi 5B with a clean installation of Raspberry Pi OS (64-bit
 
 * If using an external hard disk without an external power supply, ensure it gets enough power to avoid hardware issues when syncing, by adding the line "max_usb_current=1" to /boot/config.txt
 
-* Clone NONO and checkout the most recent release version:
+* Clone NONO. NONO has no tagged releases yet, so build from `master` for now. Once a release tag exists, add `git checkout vX.Y.Z` before the build step:
 
     ```bash
     git clone --recursive https://github.com/hempmillionaire/Nono.git
     cd Nono
-    git checkout v0.18.4.1
     ```
 
 * Build:
@@ -331,11 +330,7 @@ application.
     cd Nono
     ```
 
-* If you would like a specific [version/tag](https://github.com/hempmillionaire/Nono/tags), do a git checkout for that version. eg. 'v0.18.4.1'. If you don't care about the version and just want binaries from master, skip this step:
-
-    ```bash
-    git checkout v0.18.4.1
-    ```
+* If a NONO release tag exists by the time you're reading this, you can pin to it via [the tags list](https://github.com/hempmillionaire/Nono/tags) — `git checkout vX.Y.Z`. NONO has not tagged its first release yet, so for now skip this step and just build from `master`.
 
 * To build NONO, run:
 
@@ -533,16 +528,14 @@ to add a rule to allow this connection too, in addition to telling torsocks to
 allow inbound connections. Full example:
 
 ```bash
-sudo iptables -I OUTPUT 2 -p tcp -d 127.0.0.1 -m tcp --dport 18081 -j ACCEPT
+sudo iptables -I OUTPUT 2 -p tcp -d 127.0.0.1 -m tcp --dport 24701 -j ACCEPT
 DNS_PUBLIC=tcp torsocks ./nonod --p2p-bind-ip 127.0.0.1 --rpc-bind-ip 127.0.0.1 \
     --data-dir /home/amnesia/Persistent/your/directory/to/the/blockchain
 ```
 
 ## Pruning
 
-As of April 2022, the full NONO blockchain file (initially small; the chain has only just launched) is about 130 GB. One can store a pruned blockchain, which is about 45 GB.
-A pruned blockchain can only serve part of the historical chain data to other peers, but is otherwise identical in
-functionality to the full blockchain.
+NONO's chain is fresh and currently tiny. There is no firm blockchain-size guidance yet — operators running the very first nodes can expect the database to grow at roughly the per-block weight allowed by the protocol, so for `60s` blocks with the inherited Monero block-weight ceiling, an idle chain accumulates ~MB per day, scaling with usage. A pruned blockchain still serves at least the recent 5,500 blocks of historical data to other peers and is otherwise functionally identical to a full node.
 To use a pruned blockchain, it is best to start the initial sync with `--prune-blockchain`. However, it is also possible
 to prune an existing blockchain using the `nono-blockchain-prune` tool or using the `--prune-blockchain` `nonod` option
 with an existing chain. If an existing chain exists, pruning will temporarily require disk space to store both the full

@@ -1,4 +1,18 @@
-# Monero
+# NONO
+
+CPU-mined privacy money. Fair launch — no premine, no dev tax, no founder allocation.
+
+NONO is a fork of Monero. It keeps Monero's RandomX PoW and privacy stack (RingCT, stealth addresses, bulletproofs+) and changes only what's needed to run as its own independent network:
+
+- Total emission: 88,888,888 NONO
+- Block time: 60 seconds (Monero is 120s)
+- Decimals: 10 (Monero is 12)
+- Independent network id, magic bytes, ports, address prefixes, seed nodes, and genesis block
+- Daemon: `nonod` &nbsp; Wallet CLI: `nono-wallet-cli` &nbsp; Wallet RPC: `nono-wallet-rpc`
+
+The rest of this README is inherited from upstream Monero and still applies to NONO's underlying architecture, build process, and privacy primitives. NONO-specific operator docs will land separately.
+
+---
 
 Copyright (c) 2014-2024, The Monero Project
 Portions Copyright (c) 2012-2013 The Cryptonote developers.

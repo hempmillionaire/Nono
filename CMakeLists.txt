@@ -56,7 +56,7 @@ if (IOS)
     INCLUDE(CmakeLists_IOS.txt)
 endif()
 
-project(monero)
+project(nono)
 
 option (USE_COMPILER_CACHE "Use compiler cache if a usable instance is found (sccache/ccache)" ON)
 if (USE_COMPILER_CACHE)

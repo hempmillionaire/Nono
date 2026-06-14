@@ -461,13 +461,25 @@ TEST_decode_addr_neg("ZZZZZZ", decode_fails_due_address_too_short_5);
 
 namespace
 {
+  // Deterministic NONO test fixture (label: base58:roundtrip-standard).
+  // spend pubkey = bf9ba15b3925d43be6fd4114fc28c0205f4ca72df3762b277f1deabb7fa3c510
+  // view  pubkey = 25ea7a4fa5800614eac583480e29966f41d71262072de9debb39551bd246b26e
+  //
+  // Both pubkeys are NUMS points derived via the recipe in
+  //   tests/unit_tests/data/nono_test_addresses.py
+  // (SHA-256 of a public seed, try-and-decode). No private key exists for
+  // these keys, so the address below cannot receive funds on any NONO network.
+  // The spend pubkey additionally satisfies "byte 0 -> 0x00 yields an invalid
+  // Ed25519 point" and the view pubkey satisfies "byte 31 -> 0x01 yields an
+  // invalid point", because the fails_on_invalid_address_spend_key /
+  // fails_on_invalid_address_view_key tests below rely on those mutations
+  // producing parse failures.
   std::string test_serialized_keys = MAKE_STR(
-    "\xf7\x24\xbc\x5c\x6c\xfb\xb9\xd9\x76\x02\xc3\x00\x42\x3a\x2f\x28"
-    "\x64\x18\x74\x51\x3a\x03\x57\x78\xa0\xc1\x77\x8d\x83\x32\x01\xe9"
-    "\x22\x09\x39\x68\x9e\xdf\x1a\xbd\x5b\xc1\xd0\x31\xf7\x3e\xcd\x6c"
-    "\x99\x3a\xdd\x66\xd6\x80\x88\x70\x45\x6a\xfe\xb8\xe7\xee\xb6\x8d");
-  // DON'T ever use this as a destination for funds, as the keys are right above this comment...
-  std::string test_keys_addr_str = "4AzKEX4gXdJdNeM6dfiBFL7kqund3HYGvMBF3ttsNd9SfzgYB6L7ep1Yg1osYJzLdaKAYSLVh6e6jKnAuzj3bw1oGy9kXCb";
+    "\xbf\x9b\xa1\x5b\x39\x25\xd4\x3b\xe6\xfd\x41\x14\xfc\x28\xc0\x20"
+    "\x5f\x4c\xa7\x2d\xf3\x76\x2b\x27\x7f\x1d\xea\xbb\x7f\xa3\xc5\x10"
+    "\x25\xea\x7a\x4f\xa5\x80\x06\x14\xea\xc5\x83\x48\x0e\x29\x96\x6f"
+    "\x41\xd7\x12\x62\x07\x2d\xe9\xde\xbb\x39\x55\x1b\xd2\x46\xb2\x6e");
+  std::string test_keys_addr_str = "NNKa3iRGD3yB28PTNVNW156R3zGRx3jnJ7cAdU5um9wA3hf6mNsWcNH4VvU5Rvu78yKcLNswizxE4eFmqVrKqFRBDU7a7vq";
 }
 
 TEST(get_account_address_as_str, works_correctly)

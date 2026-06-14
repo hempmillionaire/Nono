@@ -50,10 +50,16 @@
 
 #define BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW               60
 
-// MONEY_SUPPLY - total number coins to be generated
-#define MONEY_SUPPLY                                    ((uint64_t)(-1))
-#define EMISSION_SPEED_FACTOR_PER_MINUTE                (20)
-#define FINAL_SUBSIDY_PER_MINUTE                        ((uint64_t)300000000000) // 3 * pow(10, 11)
+// MONEY_SUPPLY - asymptotic pre-tail supply target in atomic units.
+// NONO: 88,888,888 NONO * 10^10 atomic/NONO = 8.88888880e17 (fits uint64).
+#define MONEY_SUPPLY                                    ((uint64_t)888888880000000000ULL)
+// Intentional NONO choice: factor 21 with 60s blocks yields ~42.38 NONO/block
+// at genesis and decays at half Monero's per-minute rate. Slower, fairer launch
+// curve — not "preserving Monero's per-minute decay".
+#define EMISSION_SPEED_FACTOR_PER_MINUTE                (21)
+// Tail emission floor: 1.45 NONO per minute (1 block at 60s targets).
+// 1.45 / 88,888,888 ~= 1.63e-8/min matches Monero's tail-to-supply ratio.
+#define FINAL_SUBSIDY_PER_MINUTE                        ((uint64_t)14500000000ULL) // 1.45 * pow(10, 10)
 
 #define CRYPTONOTE_REWARD_BLOCKS_WINDOW                 100
 #define CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2    60000 //size of block (bytes) after which reward for block calculated using block size
@@ -62,22 +68,24 @@
 #define CRYPTONOTE_LONG_TERM_BLOCK_WEIGHT_WINDOW_SIZE   100000 // size in blocks of the long term block weight median window
 #define CRYPTONOTE_SHORT_TERM_BLOCK_WEIGHT_SURGE_FACTOR 50
 #define CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE          600
-#define CRYPTONOTE_DISPLAY_DECIMAL_POINT                12
+#define CRYPTONOTE_DISPLAY_DECIMAL_POINT                10
 // COIN - number of smallest units in one coin
-#define COIN                                            ((uint64_t)1000000000000) // pow(10, 12)
+#define COIN                                            ((uint64_t)10000000000) // pow(10, 10)
 
-#define FEE_PER_KB_OLD                                  ((uint64_t)10000000000) // pow(10, 10)
-#define FEE_PER_KB                                      ((uint64_t)2000000000) // 2 * pow(10, 9)
-#define FEE_PER_BYTE                                    ((uint64_t)300000)
-#define DYNAMIC_FEE_PER_KB_BASE_FEE                     ((uint64_t)2000000000) // 2 * pow(10,9)
-#define DYNAMIC_FEE_PER_KB_BASE_BLOCK_REWARD            ((uint64_t)10000000000000) // 10 * pow(10,12)
+// Fee constants rescaled by /100 vs Monero so their "fraction of one coin"
+// semantics is preserved across the 12-decimal → 10-decimal change.
+#define FEE_PER_KB_OLD                                  ((uint64_t)100000000) // pow(10, 8)
+#define FEE_PER_KB                                      ((uint64_t)20000000) // 2 * pow(10, 7)
+#define FEE_PER_BYTE                                    ((uint64_t)3000)
+#define DYNAMIC_FEE_PER_KB_BASE_FEE                     ((uint64_t)20000000) // 2 * pow(10, 7)
+#define DYNAMIC_FEE_PER_KB_BASE_BLOCK_REWARD            ((uint64_t)100000000000) // 10 * pow(10, 10) = 10 NONO
 #define DYNAMIC_FEE_PER_KB_BASE_FEE_V5                  ((uint64_t)2000000000 * (uint64_t)CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V2 / CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V5)
 #define DYNAMIC_FEE_REFERENCE_TRANSACTION_WEIGHT         ((uint64_t)3000)
 
 #define ORPHANED_BLOCKS_MAX_COUNT                       100
 
 
-#define DIFFICULTY_TARGET_V2                            120  // seconds
+#define DIFFICULTY_TARGET_V2                            60   // seconds - NONO uses 60s blocks
 #define DIFFICULTY_TARGET_V1                            60  // seconds - before first fork
 #define DIFFICULTY_WINDOW                               720 // blocks
 #define DIFFICULTY_LAG                                  15  // !!!
@@ -241,12 +249,16 @@ namespace config
   boost::uuids::uuid const NETWORK_ID = { {
       0x4E, 0x4F, 0x4E, 0x4F, 0x4D, 0x41, 0x49, 0x4E, 0x26, 0x06, 0x14, 0x00, 0x88, 0x88, 0x88, 0x88
     } };
-  // TODO(emission-branch): GENESIS_TX and GENESIS_NONCE will be regenerated as part of
-  // feat/emission-10dec-88M alongside MONEY_SUPPLY / EMISSION_SPEED_FACTOR / FINAL_SUBSIDY
-  // since the genesis coinbase amount depends on those constants. Left as Monero's for now
-  // so the chain still compiles on this branch.
-  std::string const GENESIS_TX = "013c01ff0001ffffffffffff03029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd08807121017767aafcde9be00dcfd098715ebcf7f410daebc582fda69d24a28e9d0bc890d1";
-  uint32_t const GENESIS_NONCE = 10000;
+  // Genesis coinbase amount = MONEY_SUPPLY >> EMISSION_SPEED_FACTOR_PER_MINUTE
+  //                         = 888888880000000000 >> 21
+  //                         = 423855247497 atomic (= 42.3855247497 NONO)
+  // varint(423855247497) = 89 a1 f7 fd aa 0c (replaces Monero's ffffffffffff03).
+  // Output and tx_extra pubkeys inherited from Monero — output is stranded
+  // (no privkey will ever exist for these), same property Monero's own genesis
+  // has, so we leave them. Nonce changed to 88888888 for chain separation only;
+  // genesis is not PoW-validated.
+  std::string const GENESIS_TX = "013c01ff000189a1f7fdaa0c029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd08807121017767aafcde9be00dcfd098715ebcf7f410daebc582fda69d24a28e9d0bc890d1";
+  uint32_t const GENESIS_NONCE = 88888888;
 
   // Hash domain separators
   const char HASH_KEY_BULLETPROOF_EXPONENT[] = "bulletproof";
@@ -288,9 +300,9 @@ namespace config
     boost::uuids::uuid const NETWORK_ID = { {
         0x4E, 0x4F, 0x4E, 0x4F, 0x54, 0x45, 0x53, 0x54, 0x26, 0x06, 0x14, 0x00, 0x88, 0x88, 0x88, 0x88
       } };
-    // TODO(emission-branch): regenerate alongside mainnet GENESIS_TX in feat/emission-10dec-88M.
-    std::string const GENESIS_TX = "013c01ff0001ffffffffffff03029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd08807121017767aafcde9be00dcfd098715ebcf7f410daebc582fda69d24a28e9d0bc890d1";
-    uint32_t const GENESIS_NONCE = 10001;
+    // Amount-varint matches mainnet (genesis reward = MONEY_SUPPLY >> 21).
+    std::string const GENESIS_TX = "013c01ff000189a1f7fdaa0c029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd08807121017767aafcde9be00dcfd098715ebcf7f410daebc582fda69d24a28e9d0bc890d1";
+    uint32_t const GENESIS_NONCE = 88888889;
   }
 
   namespace stagenet
@@ -305,9 +317,9 @@ namespace config
     boost::uuids::uuid const NETWORK_ID = { {
         0x4E, 0x4F, 0x4E, 0x4F, 0x53, 0x54, 0x41, 0x47, 0x26, 0x06, 0x14, 0x00, 0x88, 0x88, 0x88, 0x88
       } };
-    // TODO(emission-branch): regenerate alongside mainnet GENESIS_TX in feat/emission-10dec-88M.
-    std::string const GENESIS_TX = "013c01ff0001ffffffffffff0302df5d56da0c7d643ddd1ce61901c7bdc5fb1738bfe39fbe69c28a3a7032729c0f2101168d0c4ca86fb55a4cf6a36d31431be1c53a3bd7411bb24e8832410289fa6f3b";
-    uint32_t const GENESIS_NONCE = 10002;
+    // Amount-varint matches mainnet (genesis reward = MONEY_SUPPLY >> 21).
+    std::string const GENESIS_TX = "013c01ff000189a1f7fdaa0c02df5d56da0c7d643ddd1ce61901c7bdc5fb1738bfe39fbe69c28a3a7032729c0f2101168d0c4ca86fb55a4cf6a36d31431be1c53a3bd7411bb24e8832410289fa6f3b";
+    uint32_t const GENESIS_NONCE = 88888890;
   }
 }
 

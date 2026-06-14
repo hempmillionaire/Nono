@@ -48,7 +48,7 @@ What NONO does **not** change: RingCT, stealth addresses, bulletproofs+, RandomX
 
 NONO is built directly on the Monero source tree and would not exist without the work of the Monero Project and the Cryptonote authors. Where this README, the source comments, or the citation list refer to research papers, protocol design, or the broader Cryptonote/RingCT/RandomX literature, those references point back to the Monero ecosystem on purpose and should stay that way.
 
-- Upstream codebase: https://github.com/monero-project/monero
+- Upstream codebase: https://github.com/hempmillionaire/Nono
 - Monero Research Lab publications: cited inline in source where relevant
 - RandomX specification: https://github.com/tevador/RandomX
 
@@ -172,13 +172,13 @@ pkg install git gmake cmake pkgconf boost-libs libzmq4 libsodium unbound
 Clone recursively to pull-in needed submodule(s):
 
 ```
-git clone --recursive https://github.com/monero-project/monero
+git clone --recursive https://github.com/hempmillionaire/Nono
 ```
 
 If you already have a repo cloned, initialize and update:
 
 ```
-cd monero && git submodule init && git submodule update
+cd Nono && git submodule init && git submodule update
 ```
 
 *Note*: If there are submodule differences between branches, you may need 
@@ -187,7 +187,7 @@ to build successfully.
 
 ### Build instructions
 
-Monero uses the CMake build system and a top-level [Makefile](Makefile) that
+NONO uses the CMake build system and a top-level [Makefile](Makefile) that
 invokes cmake commands as needed.
 
 #### On Linux and macOS
@@ -196,7 +196,7 @@ invokes cmake commands as needed.
 * Change to the root of the source code directory, change to the most recent release branch, and build:
 
     ```bash
-    cd monero
+    cd Nono
     git checkout release-v0.18
     make
     ```
@@ -207,14 +207,14 @@ invokes cmake commands as needed.
     available per thread.
 
     *Note*: The instructions above will compile the most stable release of the
-    Monero software. If you would like to use and test the most recent software,
+    NONO software. If you would like to use and test the most recent software,
     use `git checkout master`. The master branch may contain updates that are
     both unstable and incompatible with release software, though testing is always
     encouraged.
 
 * The resulting executables can be found in `build/release/bin`
 
-* Add `PATH="$PATH:$HOME/monero/build/release/bin"` to `.profile`
+* Add `PATH="$PATH:$HOME/Nono/build/release/bin"` to `.profile`
 
 * Run NONO with `nonod --detach`
 
@@ -238,7 +238,7 @@ invokes cmake commands as needed.
     HAVE_DOT=YES doxygen Doxyfile
     ```
 
-* **Optional**: use ccache not to rebuild translation units, that haven't really changed. Monero's CMakeLists.txt file automatically handles it
+* **Optional**: use ccache not to rebuild translation units, that haven't really changed. the CMakeLists.txt file automatically handles it
 
     ```bash
     sudo apt install ccache
@@ -250,7 +250,7 @@ Tested on a Raspberry Pi 5B with a clean installation of Raspberry Pi OS (64-bit
 
 * `apt-get update && apt-get upgrade` to install the latest software
 
-* Install the dependencies for Monero from the 'Debian' column in the table above.
+* Install the build dependencies from the 'Debian' column in the table above.
 
 * **Optional**: increase the system swap size:
 
@@ -263,11 +263,11 @@ Tested on a Raspberry Pi 5B with a clean installation of Raspberry Pi OS (64-bit
 
 * If using an external hard disk without an external power supply, ensure it gets enough power to avoid hardware issues when syncing, by adding the line "max_usb_current=1" to /boot/config.txt
 
-* Clone Monero and checkout the most recent release version:
+* Clone NONO and checkout the most recent release version:
 
     ```bash
-    git clone --recursive https://github.com/monero-project/monero.git
-    cd monero
+    git clone --recursive https://github.com/hempmillionaire/Nono.git
+    cd Nono
     git checkout v0.18.4.1
     ```
 
@@ -281,7 +281,7 @@ Tested on a Raspberry Pi 5B with a clean installation of Raspberry Pi OS (64-bit
 
 * The resulting executables can be found in `build/release/bin`
 
-* Add `export PATH="$PATH:$HOME/monero/build/release/bin"` to `$HOME/.profile`
+* Add `export PATH="$PATH:$HOME/Nono/build/release/bin"` to `$HOME/.profile`
 
 * Run `source $HOME/.profile`
 
@@ -320,7 +320,7 @@ application.
 * To git clone, run:
 
     ```bash
-    git clone --recursive https://github.com/monero-project/monero.git
+    git clone --recursive https://github.com/hempmillionaire/Nono.git
     ```
 
 **Building**
@@ -328,16 +328,16 @@ application.
 * Change to the cloned directory, run:
 
     ```bash
-    cd monero
+    cd Nono
     ```
 
-* If you would like a specific [version/tag](https://github.com/monero-project/monero/tags), do a git checkout for that version. eg. 'v0.18.4.1'. If you don't care about the version and just want binaries from master, skip this step:
+* If you would like a specific [version/tag](https://github.com/hempmillionaire/Nono/tags), do a git checkout for that version. eg. 'v0.18.4.1'. If you don't care about the version and just want binaries from master, skip this step:
 
     ```bash
     git checkout v0.18.4.1
     ```
 
-* To build Monero, run:
+* To build NONO, run:
 
     ```bash
     make release-static -j $(nproc)
@@ -357,9 +357,9 @@ application.
 ### On FreeBSD:
 
 The project can be built from scratch by following instructions for Linux above(but use `gmake` instead of `make`). 
-If you are running Monero in a jail, you need to add `sysvsem="new"` to your jail configuration, otherwise lmdb will throw the error message: `Failed to open lmdb environment: Function not implemented`.
+If you are running NONO in a jail, you need to add `sysvsem="new"` to your jail configuration, otherwise lmdb will throw the error message: `Failed to open lmdb environment: Function not implemented`.
 
-Monero is also available as a port or package as `monero-cli`.
+(NONO ships no packaged distribution yet — build from source.)
 
 ### On OpenBSD:
 
@@ -368,9 +368,9 @@ You will need to add a few packages to your system. `pkg_add cmake gmake zeromq 
 The `doxygen` and `graphviz` packages are optional and require the xbase set.
 Running the test suite also requires `py3-requests` package.
 
-Build monero: `gmake`
+Build NONO: `gmake`
 
-Note: you may encounter the following error when compiling the latest version of Monero as a normal user:
+Note: you may encounter the following error when compiling the latest version of NONO as a normal user:
 
 ```
 LLVM ERROR: out of memory
@@ -385,7 +385,7 @@ Check that the dependencies are present: `pkg_info -c libexecinfo boost-headers 
 
 Third-party dependencies are usually under `/usr/pkg/`, but if you have a custom setup, adjust the "/usr/pkg" (below) accordingly.
 
-Clone the monero repository recursively and checkout the most recent release as described above. Then build monero: `gmake BOOST_ROOT=/usr/pkg LDFLAGS="-Wl,-R/usr/pkg/lib" release`.  The resulting executables can be found in `build/NetBSD/[Release version]/Release/bin/`.
+Clone the NONO repository recursively and checkout the most recent release as described above. Then build NONO: `gmake BOOST_ROOT=/usr/pkg LDFLAGS="-Wl,-R/usr/pkg/lib" release`.  The resulting executables can be found in `build/NetBSD/[Release version]/Release/bin/`.
 
 ### On Solaris:
 
@@ -438,13 +438,13 @@ You can also cross-compile static binaries on Linux for Windows and macOS with t
 
 The required packages are the names for each toolchain on apt. Depending on your distro, they may have different names. The `depends` system has been tested on Ubuntu 18.04 and 20.04.
 
-Using `depends` might also be easier to compile Monero on Windows than using MSYS. Activate Windows Subsystem for Linux (WSL) with a distro (for example Ubuntu), install the apt build-essentials and follow the `depends` steps as depicted above.
+Using `depends` might also be easier to compile NONO on Windows than using MSYS. Activate Windows Subsystem for Linux (WSL) with a distro (for example Ubuntu), install the apt build-essentials and follow the `depends` steps as depicted above.
 
 The produced binaries still link libc dynamically. If the binary is compiled on a current distribution, it might not run on an older distribution with an older installation of libc.
 
 ### Trezor hardware wallet support
 
-If you have an issue with building Monero with Trezor support, you can disable it by setting `USE_DEVICE_TREZOR=OFF`, e.g., 
+If you have an issue with building NONO with Trezor support, you can disable it by setting `USE_DEVICE_TREZOR=OFF`, e.g., 
 
 ```bash
 USE_DEVICE_TREZOR=OFF make release
@@ -456,75 +456,15 @@ For more information, please check out Trezor [src/device_trezor/README.md](src/
 
 See [contrib/guix/README.md](contrib/guix/README.md).
 
-## Installing Monero from a package
+## Installing NONO from a package
 
-**DISCLAIMER: These packages are not part of this repository or maintained by this project's contributors, and as such, do not go through the same review process to ensure their trustworthiness and security.**
-
-Packages are available for
-
-* Debian 12 (Bookworm) or later
-
-    ```bash
-    sudo apt install monero
-    ```
-  More info and versions in the [Debian package tracker](https://tracker.debian.org/pkg/monero).
+NONO does not ship pre-built packages yet. Build from source per the
+section above. Once mainnet stabilises and a release artifact pipeline
+is set up, packages for the common distributions will be published
+here; until then, `git clone` and `make release` is the supported path.
 
 
-* Arch Linux:
-
-    ```bash
-    sudo pacman -S monero
-    ```
-
-* NixOS:
-
-    ```bash
-    nix-shell -p monero-cli
-    ```
-
-* Guix:
-
-    ```bash
-    guix package -i monero
-    ```
-
-* Gentoo [Monero overlay](https://github.com/gentoo-monero/gentoo-monero)
-
-    ```bash
-    emerge --noreplace eselect-repository
-    eselect repository enable monero
-    emaint sync -r monero
-    echo '*/*::monero ~amd64' >> /etc/portage/package.accept_keywords
-    emerge net-p2p/monero
-    ```
-
-* Alpine Linux:
-
-    ```bash
-    apk add monero
-    ```
-
-* macOS [(homebrew)](https://brew.sh/)
-    ```bash
-    brew install monero
-    ```
-
-* Docker
-
-    ```bash
-    # Build image
-    docker build -t nonod .
-
-    # Create a directory on the host for the blockchain
-    mkdir -p /path/to/bitmonero
-
-    # Run it
-    docker run -d --user $(id -u):$(id -g) -v /path/to/nono:/.nono -p 24700:24700 -p 24701:24701 nonod
-    ```
-
-Packaging for your favorite distribution would be a welcome contribution!
-
-## Running monerod
+## Running nonod
 
 The build places the binary in `bin/` sub-directory within the build directory
 from which cmake was invoked (repository root by default). To run in the
@@ -534,7 +474,7 @@ foreground:
 ./bin/monerod
 ```
 
-To list all available options, run `./bin/monerod --help`.  Options can be
+To list all available options, run `./bin/nonod --help`.  Options can be
 specified either on the command line or in a configuration file passed by the
 `--config-file` argument.  To specify an option in the configuration file, add
 a line with the syntax `argumentname=value`, where `argumentname` is the name
@@ -543,18 +483,18 @@ of the argument without the leading dashes, for example, `log-level=1`.
 To run in background:
 
 ```bash
-./bin/monerod --log-file monerod.log --detach
+./bin/nonod --log-file monerod.log --detach
 ```
 
 To run as a systemd service, copy
-[monerod.service](utils/systemd/monerod.service) to `/etc/systemd/system/` and
+[monerod.service](utils/systemd/nonod.service) to `/etc/systemd/system/` and
 [monerod.conf](utils/conf/monerod.conf) to `/etc/`. The [example
-service](utils/systemd/monerod.service) assumes that the user `monero` exists
+service](utils/systemd/nonod.service) assumes that the user `nono` exists
 and its home is the data directory specified in the [example
 config](utils/conf/monerod.conf).
 
 If you're on Mac, you may need to add the `--max-concurrency 1` option to
-monero-wallet-cli, and possibly monerod, if you get crashes refreshing.
+nono-wallet-cli, and possibly nonod, if you get crashes refreshing.
 
 ## Internationalization
 
@@ -568,7 +508,7 @@ See [README.i18n.md](docs/README.i18n.md).
 > used solely for relaying transactions received over local RPC. This provides
 > privacy and better protection against surrounding node (sybil) attacks.
 
-While Monero isn't made to integrate with Tor, it can be used wrapped with torsocks, by
+While NONO inherits Monero's Tor support guidance — it isn't designed with Tor, it can be used wrapped with torsocks, by
 setting the following configuration parameters and environment variables:
 
 * `--p2p-bind-ip 127.0.0.1` on the command line or `p2p-bind-ip=127.0.0.1` in
@@ -576,14 +516,14 @@ setting the following configuration parameters and environment variables:
 * If you use the wallet with a Tor daemon via the loopback IP (eg, 127.0.0.1:9050),
   then use `--untrusted-daemon` unless it is your own hidden service.
 
-Example command line to start monerod through Tor:
+Example command line to start nonod through Tor:
 
 ```bash
-monerod --proxy 127.0.0.1:9050 --p2p-bind-ip 127.0.0.1
+nonod --proxy 127.0.0.1:9050 --p2p-bind-ip 127.0.0.1
 ```
 
-A helper script is in contrib/tor/monero-over-tor.sh. It assumes Tor is installed
-already, and runs Tor and Monero with the right configuration.
+A helper script is in contrib/tor/nono-over-tor.sh. It assumes Tor is installed
+already, and runs Tor and nonod with the right configuration.
 
 ### Using Tor on Tails
 
@@ -593,17 +533,17 @@ allow inbound connections. Full example:
 
 ```bash
 sudo iptables -I OUTPUT 2 -p tcp -d 127.0.0.1 -m tcp --dport 18081 -j ACCEPT
-DNS_PUBLIC=tcp torsocks ./monerod --p2p-bind-ip 127.0.0.1 --rpc-bind-ip 127.0.0.1 \
+DNS_PUBLIC=tcp torsocks ./nonod --p2p-bind-ip 127.0.0.1 --rpc-bind-ip 127.0.0.1 \
     --data-dir /home/amnesia/Persistent/your/directory/to/the/blockchain
 ```
 
 ## Pruning
 
-As of April 2022, the full Monero blockchain file is about 130 GB. One can store a pruned blockchain, which is about 45 GB.
+As of April 2022, the full NONO blockchain file (initially small; the chain has only just launched) is about 130 GB. One can store a pruned blockchain, which is about 45 GB.
 A pruned blockchain can only serve part of the historical chain data to other peers, but is otherwise identical in
 functionality to the full blockchain.
 To use a pruned blockchain, it is best to start the initial sync with `--prune-blockchain`. However, it is also possible
-to prune an existing blockchain using the `monero-blockchain-prune` tool or using the `--prune-blockchain` `monerod` option
+to prune an existing blockchain using the `nono-blockchain-prune` tool or using the `--prune-blockchain` `nonod` option
 with an existing chain. If an existing chain exists, pruning will temporarily require disk space to store both the full
 and pruned blockchains.
 
@@ -611,7 +551,7 @@ For more detailed information see the ['Pruning' entry in the Moneropedia](https
 
 ## Debugging
 
-This section contains general instructions for debugging failed installs or problems encountered with Monero. First, ensure you are running the latest version built from the GitHub repo.
+This section contains general instructions for debugging failed installs or problems encountered with NONO. First, ensure you are running the latest version built from the GitHub repo.
 
 ### Obtaining stack traces and core dumps on Unix systems
 
@@ -624,7 +564,7 @@ Run the build.
 Once it stalls, enter the following command:
 
 ```bash
-gdb /path/to/monerod `pidof monerod`
+gdb /path/to/nonod `pidof monerod`
 ```
 
 Type `thread apply all bt` within gdb in order to obtain the stack trace
@@ -642,7 +582,7 @@ When it terminates with an output along the lines of "Segmentation fault (core d
 You can now analyse this core dump with `gdb` as follows:
 
 ```bash
-gdb /path/to/monerod /path/to/dumpfile`
+gdb /path/to/nonod /path/to/dumpfile`
 ```
 
 Print the stack trace with `bt`
@@ -653,7 +593,7 @@ Print the stack trace with `bt`
 coredumpctl -1 gdb
 ```
 
-#### To run Monero within gdb:
+#### To run nonod within gdb:
 
 Type `gdb /path/to/monerod`
 
@@ -667,13 +607,13 @@ There are two tools available:
 
 #### ASAN
 
-Configure Monero with the -D SANITIZE=ON cmake flag, eg:
+Configure NONO with the -D SANITIZE=ON cmake flag, eg:
 
 ```bash
 cd build/debug && cmake -D SANITIZE=ON -D CMAKE_BUILD_TYPE=Debug ../..
 ```
 
-You can then run the monero tools normally. Performance will typically halve.
+You can then run the NONO tools normally. Performance will typically halve.
 
 #### valgrind
 
@@ -686,7 +626,7 @@ Instructions for debugging suspected blockchain corruption as per @HYC
 There is an `mdb_stat` command in the LMDB source that can print statistics about the database but it's not routinely built. This can be built with the following command:
 
 ```bash
-cd ~/monero/external/db_drivers/liblmdb && make
+cd ~/Nono/external/db_drivers/liblmdb && make
 ```
 
 The output of `mdb_stat -ea <path to blockchain dir>` will indicate inconsistencies in the blocks, block_heights and block_info table.
@@ -701,13 +641,13 @@ These records are dumped as hex data, where the first line is the key and the se
 
 ### Socket-based
 
-Because of the nature of the socket-based protocols that drive monero, certain protocol weaknesses are somewhat unavoidable at this time. While these weaknesses can theoretically be fully mitigated, the effort required (the means) may not justify the ends. As such, please consider taking the following precautions if you are a monero node operator:
+Because of the nature of the socket-based protocols that drive NONO, certain protocol weaknesses are somewhat unavoidable at this time. While these weaknesses can theoretically be fully mitigated, the effort required (the means) may not justify the ends. As such, please consider taking the following precautions if you are a NONO node operator:
 
-- Run `monerod` on a "secured" machine. If operational security is not your forte, at a very minimum, have a dedicated a computer running `monerod` and **do not** browse the web, use email clients, or use any other potentially harmful apps on your `monerod` machine. **Do not click links or load URL/MUA content on the same machine**. Doing so may potentially exploit weaknesses in commands which accept "localhost" and "127.0.0.1".
-- If you plan on hosting a public "remote" node, start `monerod` with `--restricted-rpc`. This is a must.
+- Run `nonod` on a "secured" machine. If operational security is not your forte, at a very minimum, have a dedicated a computer running `nonod` and **do not** browse the web, use email clients, or use any other potentially harmful apps on your `nonod` machine. **Do not click links or load URL/MUA content on the same machine**. Doing so may potentially exploit weaknesses in commands which accept "localhost" and "127.0.0.1".
+- If you plan on hosting a public "remote" node, start `nonod` with `--restricted-rpc`. This is a must.
 
 ### Blockchain-based
 
 Certain blockchain "features" can be considered "bugs" if misused correctly. Consequently, please consider the following:
 
-- When receiving monero, be aware that it may be locked for an arbitrary time if the sender elected to, preventing you from spending that monero until the lock time expires. You may want to hold off acting upon such a transaction until the unlock time lapses. To get a sense of that time, you can consider the remaining blocktime until unlock as seen in the `show_transfers` command.
+- When receiving NONO, be aware that it may be locked for an arbitrary time if the sender elected to, preventing you from spending that NONO until the lock time expires. You may want to hold off acting upon such a transaction until the unlock time lapses. To get a sense of that time, you can consider the remaining blocktime until unlock as seen in the `show_transfers` command.

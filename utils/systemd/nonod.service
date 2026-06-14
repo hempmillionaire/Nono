@@ -1,0 +1,20 @@
+[Unit]
+Description=NONO Full Node
+After=network-online.target
+
+[Service]
+User=nono
+Group=nono
+WorkingDirectory=~
+StateDirectory=nono
+LogsDirectory=nono
+
+Type=simple
+ExecStart=/usr/bin/nonod --config-file /etc/nonod.conf --non-interactive
+StandardOutput=null
+StandardError=null
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

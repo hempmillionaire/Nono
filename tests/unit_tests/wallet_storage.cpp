@@ -46,7 +46,11 @@ using namespace epee::file_io_utils;
 // local/VPS build. Once the new fixture exists, replace the binary
 // blobs under tests/data/wallet_00fd416a* and update this constant
 // with the corresponding NONO primary address (will begin with 'N').
-// Until then both tests below GTEST_SKIP rather than emit false fails.
+// Every test in this file is disabled until then via the gtest
+// DISABLED_ name prefix; gtest automatically skips any test whose
+// name begins with DISABLED_. Re-enabling once the new fixture lands
+// is a search-and-replace of "DISABLED_" with "" across the eight
+// TEST() declarations below.
 static constexpr const char WALLET_00fd416a_PRIMARY_ADDRESS[] =
     "<pending NONO wallet fixture regeneration; see TODO above>";
 

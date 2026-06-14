@@ -399,8 +399,9 @@ namespace dns_utils
 // TODO: parse the string in a less stupid way, probably with regex
 std::string address_from_txt_record(const std::string& s)
 {
-  // make sure the txt record has "oa1:xmr" and find it
-  auto pos = s.find("oa1:xmr");
+  // OpenAlias TXT records use "oa1:<ticker>" as the magic prefix. NONO's
+  // ticker is "nono" — see https://openalias.org for the spec.
+  auto pos = s.find("oa1:nono");
   if (pos == std::string::npos)
     return {};
   // search from there to find "recipient_address="
@@ -412,14 +413,15 @@ std::string address_from_txt_record(const std::string& s)
   auto pos2 = s.find(";", pos);
   if (pos2 != std::string::npos)
   {
-    // length of address == 95, we can at least validate that much here
-    if (pos2 - pos == 95)
+    // Address length depends on the tag-byte varint encoding under the
+    // NONO mainnet prefixes:
+    //   tag 127 (standard)    -> 1-byte varint -> 95-char base58 address
+    //   tag 129 (subaddress)  -> 2-byte varint -> 97-char base58 address
+    //   tag 128 (integrated)  -> 2-byte varint -> 108-char base58 address
+    const auto len = pos2 - pos;
+    if (len == 95 || len == 97 || len == 108)
     {
-      return s.substr(pos, 95);
-    }
-    else if (pos2 - pos == 106) // length of address == 106 --> integrated address
-    {
-      return s.substr(pos, 106);
+      return s.substr(pos, len);
     }
   }
   return {};

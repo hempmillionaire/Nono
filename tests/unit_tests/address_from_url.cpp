@@ -43,7 +43,7 @@ TEST(AddressFromTXT, Success)
   // construction (NUMS pubkeys derived from a hash of a public seed).
   std::string addr = "NG3mSEWUiXgf51zYKtbUy57aVwveDqe1c4pjihyKdDXETLxcgEcvpU9EFnG1dsnQiZa3cwtUut2uRW5xyva7Fii5PTDu3nL";
 
-  std::string txtr = "oa1:xmr";
+  std::string txtr = "oa1:nono";
   txtr += " recipient_address=";
   txtr += addr;
   txtr += ";";
@@ -62,7 +62,7 @@ TEST(AddressFromTXT, Success)
 
   EXPECT_STREQ(addr.c_str(), res.c_str());
 
-  std::string txtr3 = "foobar oa1:xmr tx_description=\"Donation for Monero Development Fund\"; ";
+  std::string txtr3 = "foobar oa1:nono tx_description=\"NONO test transaction\"; ";
   txtr3 += "recipient_address=";
   txtr3 += addr;
   txtr3 += "; foobar";
@@ -74,7 +74,7 @@ TEST(AddressFromTXT, Success)
 
 TEST(AddressFromTXT, Failure)
 {
-  std::string txtr = "oa1:xmr recipient_address=not a real address";
+  std::string txtr = "oa1:nono recipient_address=not a real address";
 
   std::string res = tools::dns_utils::address_from_txt_record(txtr);
 
@@ -86,19 +86,16 @@ TEST(AddressFromTXT, Failure)
   ASSERT_STREQ("", res.c_str());
 }
 
-// Test renamed with the DISABLED_ prefix per gtest convention. The original
-// test resolved donate.getmonero.org via OpenAlias and asserted the returned
-// address equals MONERO_DONATION_ADDR. NONO removed that constant (no
-// donation address — fair-launch chain) and has no equivalent OpenAlias
-// record on its own infrastructure yet. Re-enable once a NONO OpenAlias host
-// (e.g. donate.nonoprivacy.com or similar) exists and we have an expected
-// reference address to assert against.
+// NONO is a fair-launch chain with no project donation address and currently
+// has no OpenAlias DNS record on its own infrastructure (e.g. no published
+// host serving an oa1:nono TXT record). Re-enable this test once such a
+// record exists and we have a known reference address to assert against.
+// Test is left in place — gtest will skip any TEST whose name begins with
+// DISABLED_ — so re-activating is a one-line rename.
 TEST(AddressFromURL, DISABLED_Success)
 {
-  GTEST_SKIP() << "Disabled: depends on Monero-specific OpenAlias infrastructure "
-                  "(donate.getmonero.org) and the removed MONERO_DONATION_ADDR "
-                  "constant. Re-enable when NONO publishes an OpenAlias address "
-                  "record and we have a known reference address.";
+  GTEST_SKIP() << "NONO has no OpenAlias record yet (no oa1:nono TXT record on "
+                  "any NONO-controlled domain). Re-enable when one exists.";
 }
 
 TEST(AddressFromURL, Failure)

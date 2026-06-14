@@ -252,12 +252,20 @@ namespace config
   // Genesis coinbase amount = MONEY_SUPPLY >> EMISSION_SPEED_FACTOR_PER_MINUTE
   //                         = 888888880000000000 >> 21
   //                         = 423855247497 atomic (= 42.3855247497 NONO)
-  // varint(423855247497) = 89 a1 f7 fd aa 0c (replaces Monero's ffffffffffff03).
-  // Output and tx_extra pubkeys inherited from Monero — output is stranded
-  // (no privkey will ever exist for these), same property Monero's own genesis
-  // has, so we leave them. Nonce changed to 88888888 for chain separation only;
-  // genesis is not PoW-validated.
-  std::string const GENESIS_TX = "013c01ff000189a1f7fdaa0c029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd08807121017767aafcde9be00dcfd098715ebcf7f410daebc582fda69d24a28e9d0bc890d1";
+  // varint(423855247497) = 89 a1 f7 fd aa 0c.
+  //
+  // Output and tx_extra pubkeys are deterministically derived NUMS points
+  // from the public seed "NONO_GENESIS_STRANDED_2026" — see
+  // utils/genesis/derive_nums_pubkeys.py for the recipe and a self-contained
+  // verifier. No private key exists for these pubkeys (they come from a
+  // hash of a public string, not from k*G for any known k), so the genesis
+  // output is intentionally unspendable on every NONO network. NONO is a
+  // fair-launch chain with no premine, no dev tax, and no founder allocation;
+  // the genesis output exists only to satisfy the block-0 coinbase structure
+  // and can never be claimed by anyone.
+  //
+  // Nonce 88888888 is cosmetic chain-separation; genesis is not PoW-validated.
+  std::string const GENESIS_TX = "013c01ff000189a1f7fdaa0c0292b94f3228b6bae81a1e67700293e48be55356c847732d801ad06885684512d721012f545ac56b05d74c41a4c2472119bbfc4826c4a1867b7c6e58ca651fa999a57d";
   uint32_t const GENESIS_NONCE = 88888888;
 
   // Hash domain separators
@@ -301,7 +309,9 @@ namespace config
         0x4E, 0x4F, 0x4E, 0x4F, 0x54, 0x45, 0x53, 0x54, 0x26, 0x06, 0x14, 0x00, 0x88, 0x88, 0x88, 0x88
       } };
     // Amount-varint matches mainnet (genesis reward = MONEY_SUPPLY >> 21).
-    std::string const GENESIS_TX = "013c01ff000189a1f7fdaa0c029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd08807121017767aafcde9be00dcfd098715ebcf7f410daebc582fda69d24a28e9d0bc890d1";
+    // NUMS pubkeys derived from seed "NONO_GENESIS_STRANDED_2026:testnet:*"
+    // (see utils/genesis/derive_nums_pubkeys.py). Unspendable by construction.
+    std::string const GENESIS_TX = "013c01ff000189a1f7fdaa0c02db090f1178827085fc3af237ec0f06c937e739a2ce268a37a58a3227903253072101a838c9e9cebf7d8022c2ca548c4cdb17cab115b6503c5ea8861ab7ee8004f711";
     uint32_t const GENESIS_NONCE = 88888889;
   }
 
@@ -318,7 +328,9 @@ namespace config
         0x4E, 0x4F, 0x4E, 0x4F, 0x53, 0x54, 0x41, 0x47, 0x26, 0x06, 0x14, 0x00, 0x88, 0x88, 0x88, 0x88
       } };
     // Amount-varint matches mainnet (genesis reward = MONEY_SUPPLY >> 21).
-    std::string const GENESIS_TX = "013c01ff000189a1f7fdaa0c02df5d56da0c7d643ddd1ce61901c7bdc5fb1738bfe39fbe69c28a3a7032729c0f2101168d0c4ca86fb55a4cf6a36d31431be1c53a3bd7411bb24e8832410289fa6f3b";
+    // NUMS pubkeys derived from seed "NONO_GENESIS_STRANDED_2026:stagenet:*"
+    // (see utils/genesis/derive_nums_pubkeys.py). Unspendable by construction.
+    std::string const GENESIS_TX = "013c01ff000189a1f7fdaa0c024aedfffdcbed24a3c54d9dfd834c2441f97c33cb6c4df051825ed33289a4f92021012dc1cbcd07a9e4e46d31031ea90f238d7ea56df19fda07db9f792e76ca54b19c";
     uint32_t const GENESIS_NONCE = 88888890;
   }
 }

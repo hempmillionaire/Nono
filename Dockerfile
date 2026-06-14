@@ -7,7 +7,7 @@ COPY --from=stagex/core-cmake:sx2026.05.0@sha256:ac023f4f1dfb1f7fb649c63de4f54f0
 COPY --from=stagex/core-ncurses:sx2026.05.0@sha256:90cc5d029c5073405f9db39c88b9509b8959bbd8f19d8cd02c20e9350cc40254 . /
 
 ENV TARGET="x86_64-pc-linux-musl"
-WORKDIR /monero
+WORKDIR /nono
 COPY . .
 
 RUN make -C contrib/depends -j$(nproc) download-linux NO_WALLET=1 NO_READLINE=1
@@ -24,10 +24,10 @@ RUN cmake --toolchain "contrib/depends/${TARGET}/share/toolchain.cmake" -S . -B 
 
 FROM scratch
 
-COPY --from=builder /monero/build/bin/monerod /
+COPY --from=builder /nono/build/bin/nonod /
 
 EXPOSE 18080
 EXPOSE 18081
 
-ENTRYPOINT ["/monerod"]
+ENTRYPOINT ["/nonod"]
 CMD ["--p2p-bind-ip=0.0.0.0", "--p2p-bind-port=18080", "--rpc-bind-ip=0.0.0.0", "--rpc-bind-port=18081", "--non-interactive", "--confirm-external-bind"]

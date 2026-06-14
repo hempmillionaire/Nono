@@ -1,3 +1,10 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo/nono-wordmark-light.png">
+    <img alt="NONO" src="docs/assets/logo/nono-wordmark-dark.png" width="360">
+  </picture>
+</p>
+
 # NONO
 
 Copyright (c) 2026, the NONO contributors

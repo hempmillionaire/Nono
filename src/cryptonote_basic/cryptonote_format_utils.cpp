@@ -1112,12 +1112,15 @@ namespace cryptonote
   //---------------------------------------------------------------
   void set_default_decimal_point(unsigned int decimal_point)
   {
+    // NONO uses 10 decimals (CRYPTONOTE_DISPLAY_DECIMAL_POINT = 10). Valid
+    // display sub-units step by 3 from the main unit, plus 0 (atomic):
+    //   10 = nono, 7 = millinono, 4 = micronono, 1 = nanonono, 0 = piconono.
     switch (decimal_point)
     {
-      case 12:
-      case 9:
-      case 6:
-      case 3:
+      case 10:
+      case 7:
+      case 4:
+      case 1:
       case 0:
         default_decimal_point = decimal_point;
         break;
@@ -1137,16 +1140,16 @@ namespace cryptonote
       decimal_point = default_decimal_point;
     switch (decimal_point)
     {
-      case 12:
+      case 10:
         return "nono";
-      case 9:
-        return "millinero";
-      case 6:
-        return "micronero";
-      case 3:
-        return "nanonero";
+      case 7:
+        return "millinono";
+      case 4:
+        return "micronono";
+      case 1:
+        return "nanonono";
       case 0:
-        return "piconero";
+        return "piconono";
       default:
         ASSERT_MES_AND_THROW("Invalid decimal point specification: " << decimal_point);
     }

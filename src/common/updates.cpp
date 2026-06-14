@@ -97,7 +97,7 @@ namespace tools
   std::string get_update_url(const std::string &software, const std::string &subdir, const std::string &buildtag, const std::string &version, bool user)
   {
     // NONO has no release download host yet. Update once a NONO release feed exists.
-    const char *base = user ? "https://downloads.nono.network/" : "https://updates.nono.network/";
+    const char *base = user ? "https://downloads.nonoprivacy.com/" : "https://updates.nonoprivacy.com/";
 #ifdef _WIN32
     static const char *extension = strncmp(buildtag.c_str(), "source", 6) ? (strncmp(buildtag.c_str(), "install-", 8) ? ".zip" : ".exe") : ".tar.bz2";
 #elif defined(__APPLE__)

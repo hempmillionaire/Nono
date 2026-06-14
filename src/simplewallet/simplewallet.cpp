@@ -2416,13 +2416,13 @@ bool simple_wallet::set_unit(const std::vector<std::string> &args/* = std::vecto
 
   if (unit == "nono")
     decimal_point = CRYPTONOTE_DISPLAY_DECIMAL_POINT;
-  else if (unit == "millinero")
+  else if (unit == "millinono")
     decimal_point = CRYPTONOTE_DISPLAY_DECIMAL_POINT - 3;
-  else if (unit == "micronero")
+  else if (unit == "micronono")
     decimal_point = CRYPTONOTE_DISPLAY_DECIMAL_POINT - 6;
-  else if (unit == "nanonero")
+  else if (unit == "nanonono")
     decimal_point = CRYPTONOTE_DISPLAY_DECIMAL_POINT - 9;
-  else if (unit == "piconero")
+  else if (unit == "piconono")
     decimal_point = 0;
   else
   {
@@ -3157,8 +3157,8 @@ simple_wallet::simple_wallet()
                                   "ask-password <0|1|2   (or never|action|decrypt)>\n "
                                   "  action: ask the password before many actions such as transfer, etc\n "
                                   "  decrypt: same as action, but keeps the spend key encrypted in memory when not needed\n "
-                                  "unit <nono|millinero|micronero|nanonero|piconero>\n "
-                                  "  Set the default NONO (sub-)unit (sub-unit names are inherited from the Cryptonote unit ladder).\n "
+                                  "unit <nono|millinono|micronono|nanonono|piconono>\n "
+                                  "  Set the default NONO (sub-)unit. millinono = 10^-3 NONO, micronono = 10^-6, nanonono = 10^-9, piconono = 10^-10 (= 1 atomic).\n "
                                   "max-reorg-depth <unsigned int>\n "
                                   "  Set the maximum amount of blocks to accept in a reorg.\n "
                                   "min-outputs-count [n]\n "
@@ -3636,7 +3636,7 @@ bool simple_wallet::set_variable(const std::vector<std::string> &args)
     CHECK_SIMPLE_VARIABLE("refresh-type", set_refresh_type, tr("full (slowest, no assumptions); optimize-coinbase (fast, assumes the whole coinbase is paid to a single address); no-coinbase (fastest, assumes we receive no coinbase transaction), default (same as optimize-coinbase)"));
     CHECK_SIMPLE_VARIABLE("priority", set_default_priority, tr("0, 1, 2, 3, or 4, or one of ") << join_priority_strings(", "));
     CHECK_SIMPLE_VARIABLE("ask-password", set_ask_password, tr("0|1|2 (or never|action|decrypt)"));
-    CHECK_SIMPLE_VARIABLE("unit", set_unit, tr("nono, millinero, micronero, nanonero, piconero"));
+    CHECK_SIMPLE_VARIABLE("unit", set_unit, tr("nono, millinono, micronono, nanonono, piconono"));
     CHECK_SIMPLE_VARIABLE("max-reorg-depth", set_max_reorg_depth, tr("unsigned integer"));
     CHECK_SIMPLE_VARIABLE("min-outputs-count", set_min_output_count, tr("unsigned integer"));
     CHECK_SIMPLE_VARIABLE("min-outputs-value", set_min_output_value, tr("amount"));

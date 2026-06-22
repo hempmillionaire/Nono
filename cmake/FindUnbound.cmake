@@ -51,6 +51,27 @@ set_target_properties(unbound PROPERTIES
         IMPORTED_LINK_INTERFACE_LANGUAGES "C"
 )
 
+# When libunbound is a static archive it does NOT carry its own transitive
+# deps, so consumers that link it must also link libevent (libunbound's
+# ub_event_pluggable.o references event_set / event_base_*). Distros that
+# ship libunbound built against libevent (Debian/Ubuntu's libunbound-dev)
+# need this even though the .so case is fine without it.
+get_filename_component(_unbound_ext "${UNBOUND_LIBRARIES}" EXT)
+if(_unbound_ext STREQUAL ".a" OR STATIC)
+    find_library(EVENT_LIBRARY event)
+    if(EVENT_LIBRARY)
+        message(STATUS "Linking libevent (${EVENT_LIBRARY}) into static unbound target")
+        # INTERFACE_LINK_LIBRARIES is appended after IMPORTED_LOCATION on the
+        # link line, so order is `unbound event` -- exactly what the static
+        # archive needs.
+        set_property(TARGET unbound APPEND PROPERTY
+            INTERFACE_LINK_LIBRARIES "${EVENT_LIBRARY}")
+    else()
+        message(WARNING "libunbound looks static but libevent was not found; expect undefined event_* symbols at link time. Install libevent-dev.")
+    endif()
+endif()
+unset(_unbound_ext)
+
 if(MINGW)
     target_link_libraries(unbound INTERFACE "iphlpapi;ws2_32;crypt32")
 endif()

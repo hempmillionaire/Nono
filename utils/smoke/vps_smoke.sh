@@ -26,8 +26,11 @@ REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$REPO_ROOT"
 
 OUT_DIR="$REPO_ROOT/smoke-out"
-BUILD_DIR="$REPO_ROOT/build/release"
-BIN_DIR="$BUILD_DIR/bin"
+# BUILD_DIR / BIN_DIR are resolved after the build, because Monero's
+# Makefile writes to build/$(OS)/$(BRANCH)/release/ which we can't
+# predict from outside (it depends on uname + current git branch).
+BUILD_DIR=""
+BIN_DIR=""
 DATA_DIR="$OUT_DIR/nonod-data"
 WALLET_DIR="$OUT_DIR/wallets"
 LOG_DIR="$OUT_DIR/logs"
@@ -113,6 +116,23 @@ git submodule update --init --force --recursive 2>&1 | tee -a "$LOG_DIR/submodul
 section "Build"
 log "running: make release-static -j$(nproc)"
 make release-static "-j$(nproc)" 2>&1 | tail -40 | tee -a "$LOG_DIR/build.tail.log"
+
+############################################
+section "Resolve build output dir"
+# Monero's Makefile writes to build/$(OS)/$(BRANCH)/release/, e.g.
+# build/Linux/master/release. Find the actual bin dir by locating
+# the freshly-built nonod under build/. Pick the most recently
+# modified match if more than one exists (e.g. a prior branch's
+# leftovers).
+NONOD_PATH="$(find "$REPO_ROOT/build" -type f -name nonod -path '*/release/bin/*' -printf '%T@ %p\n' 2>/dev/null \
+              | sort -nr | head -1 | awk '{print $2}')"
+if [[ -z "$NONOD_PATH" ]]; then
+  fail "could not locate built nonod under $REPO_ROOT/build"
+fi
+BIN_DIR="$(dirname "$NONOD_PATH")"
+BUILD_DIR="$(dirname "$BIN_DIR")"
+log "BIN_DIR:   $BIN_DIR"
+log "BUILD_DIR: $BUILD_DIR"
 
 ############################################
 section "Binary inventory"

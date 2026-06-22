@@ -101,6 +101,15 @@ $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends 
   python3 git curl ca-certificates
 
 ############################################
+section "Sync submodules"
+# A fresh clone leaves external/* empty (or stale after a checkout that
+# changes pinned submodule SHAs). --init brings them in, --recursive
+# handles nested submodules, --force resets any local divergence so the
+# build always sees the pinned trees.
+log "running: git submodule update --init --force --recursive"
+git submodule update --init --force --recursive 2>&1 | tee -a "$LOG_DIR/submodule.log"
+
+############################################
 section "Build"
 log "running: make release-static -j$(nproc)"
 make release-static "-j$(nproc)" 2>&1 | tail -40 | tee -a "$LOG_DIR/build.tail.log"

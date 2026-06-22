@@ -1025,6 +1025,21 @@ find_package(Sodium REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(libzmq REQUIRED IMPORTED_TARGET libzmq)
 
+if(STATIC)
+  # libzmq.a on distros like Ubuntu is built with GSSAPI/Kerberos (and
+  # often pgm/norm/sodium) support, but those transitive deps are not
+  # carried in the .a -- the consumer must link them too. pkg_check_modules
+  # populates ${libzmq_STATIC_LDFLAGS} from `pkg-config --libs --static
+  # libzmq`, which has the full list. Append it to the imported target so
+  # every consumer (nonod, wallet-rpc, etc.) gets a complete link line.
+  # The redundant -lzmq it adds is harmless to ld.
+  if(libzmq_STATIC_LDFLAGS)
+    message(STATUS "Appending static libzmq deps: ${libzmq_STATIC_LDFLAGS}")
+    set_property(TARGET PkgConfig::libzmq APPEND PROPERTY
+      INTERFACE_LINK_LIBRARIES ${libzmq_STATIC_LDFLAGS})
+  endif()
+endif()
+
 include(external/supercop/functions.cmake) # place after setting flags and before src directory inclusion
 add_subdirectory(contrib)
 add_subdirectory(src)

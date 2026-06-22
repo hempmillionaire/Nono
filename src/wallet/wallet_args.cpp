@@ -211,7 +211,7 @@ namespace wallet_args
       MINFO("Setting log level = " << command_line::get_arg(vm, arg_log_level));
     else
     {
-      const char *logs = getenv("MONERO_LOGS");
+      const char *logs = getenv("NONO_LOGS");
       MINFO("Setting log levels = " << (logs ? logs : "<default>"));
     }
     MINFO(wallet_args::tr("Logging to: ") << log_path);

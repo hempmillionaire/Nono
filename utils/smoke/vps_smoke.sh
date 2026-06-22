@@ -96,7 +96,7 @@ $SUDO apt-get update -y
 $SUDO DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
   build-essential cmake pkg-config ccache \
   libboost-all-dev libssl-dev libzmq3-dev libsodium-dev libpgm-dev libnorm-dev \
-  libunwind8-dev liblzma-dev libreadline-dev libhidapi-dev libusb-1.0-0-dev \
+  libunbound-dev libunwind8-dev liblzma-dev libreadline-dev libhidapi-dev libusb-1.0-0-dev \
   libprotobuf-dev protobuf-compiler libudev-dev \
   python3 git curl ca-certificates
 

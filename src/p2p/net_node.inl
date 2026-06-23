@@ -700,9 +700,10 @@ namespace nodetool
   std::set<std::string> node_server<t_payload_net_handler>::get_ip_seed_nodes() const
   {
     std::set<std::string> full_addrs;
-    // NONO seed nodes are intentionally empty until operator nodes are online.
-    // Add fallbacks here once mainnet/testnet/stagenet seeds are deployed.
-    (void)m_nettype;
+    if (m_nettype == cryptonote::MAINNET)
+    {
+      full_addrs.insert("157.173.199.179:24700");
+    }
     return full_addrs;
   }
   //-----------------------------------------------------------------------------------

@@ -278,6 +278,13 @@ namespace config
   // Nonce 88888888 is cosmetic chain-separation; genesis is not PoW-validated.
   std::string const GENESIS_TX = "013c01ff000189a1f7fdaa0c0292b94f3228b6bae81a1e67700293e48be55356c847732d801ad06885684512d721012f545ac56b05d74c41a4c2472119bbfc4826c4a1867b7c6e58ca651fa999a57d";
   uint32_t const GENESIS_NONCE = 88888888;
+  // Explicit, auditable genesis block-0 timestamp. 1782264600 = 2026-06-24
+  // 01:30:00 UTC, the public NONO launch moment. Block 0 carries this instead
+  // of epoch 0 so the stock difficulty algorithm sees a sane time gap to the
+  // first mined block — a 1970 genesis warps early retargeting and makes blocks
+  // sprint past the 60s target. Shared across all networks (network_id, nonce,
+  // and tx already separate them); changing it changes the genesis block hash.
+  uint64_t const GENESIS_TIMESTAMP = 1782264600;
 
   // Hash domain separators
   const char HASH_KEY_BULLETPROOF_EXPONENT[] = "bulletproof";
@@ -367,6 +374,7 @@ namespace cryptonote
     boost::uuids::uuid const NETWORK_ID;
     std::string const GENESIS_TX;
     uint32_t const GENESIS_NONCE;
+    uint64_t const GENESIS_TIMESTAMP;
   };
   inline const config_t& get_config(network_type nettype)
   {
@@ -379,7 +387,8 @@ namespace cryptonote
       ::config::ZMQ_RPC_DEFAULT_PORT,
       ::config::NETWORK_ID,
       ::config::GENESIS_TX,
-      ::config::GENESIS_NONCE
+      ::config::GENESIS_NONCE,
+      ::config::GENESIS_TIMESTAMP
     };
     static const config_t testnet = {
       ::config::testnet::CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX,
@@ -390,7 +399,8 @@ namespace cryptonote
       ::config::testnet::ZMQ_RPC_DEFAULT_PORT,
       ::config::testnet::NETWORK_ID,
       ::config::testnet::GENESIS_TX,
-      ::config::testnet::GENESIS_NONCE
+      ::config::testnet::GENESIS_NONCE,
+      ::config::GENESIS_TIMESTAMP
     };
     static const config_t stagenet = {
       ::config::stagenet::CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX,
@@ -401,7 +411,8 @@ namespace cryptonote
       ::config::stagenet::ZMQ_RPC_DEFAULT_PORT,
       ::config::stagenet::NETWORK_ID,
       ::config::stagenet::GENESIS_TX,
-      ::config::stagenet::GENESIS_NONCE
+      ::config::stagenet::GENESIS_NONCE,
+      ::config::GENESIS_TIMESTAMP
     };
     switch (nettype)
     {

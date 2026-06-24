@@ -125,6 +125,10 @@ namespace cryptonote
     "allow-unsynced-mining"
   , "Allow start_mining to proceed even when the daemon is not synchronized. Intended for bootstrapping a brand-new network where there is no longer chain to sync to. Unsafe on an established network: blocks mined on a minority tip may be orphaned."
   };
+  const command_line::arg_descriptor<bool> arg_allow_unsynced_bootstrap_rpc = {
+    "allow-unsynced-bootstrap-rpc"
+  , "Allow sendrawtransaction, getblocktemplate, getminerdata and submitblock to proceed even when the daemon reports not-synchronized. Intended for bootstrapping a brand-new network where the only/tallest node never receives the one-time sync event. Consensus and tx/block validation are unaffected; this only bypasses the not-synchronized busy guard. Unsafe on an established network."
+  };
   const command_line::arg_descriptor<size_t> arg_block_download_max_size  = {
     "block-download-max-size"
   , "Set maximum size of block download queue in bytes (0 for default)"
@@ -235,6 +239,7 @@ namespace cryptonote
               m_last_json_checkpoints_update(0),
               m_disable_dns_checkpoints(false),
               m_allow_unsynced_mining(false),
+              m_allow_unsynced_bootstrap_rpc(false),
               m_update_download(0),
               m_nettype(UNDEFINED),
               m_update_available(false)
@@ -332,6 +337,7 @@ namespace cryptonote
     command_line::add_arg(desc, arg_test_dbg_lock_sleep);
     command_line::add_arg(desc, arg_offline);
     command_line::add_arg(desc, arg_allow_unsynced_mining);
+    command_line::add_arg(desc, arg_allow_unsynced_bootstrap_rpc);
     command_line::add_arg(desc, arg_disable_dns_checkpoints);
     command_line::add_arg(desc, arg_block_download_max_size);
     command_line::add_arg(desc, arg_span_limit);
@@ -387,6 +393,7 @@ namespace cryptonote
     set_enforce_dns_checkpoints(command_line::get_arg(vm, arg_dns_checkpoints));
     m_offline = get_arg(vm, arg_offline);
     m_allow_unsynced_mining = get_arg(vm, arg_allow_unsynced_mining);
+    m_allow_unsynced_bootstrap_rpc = get_arg(vm, arg_allow_unsynced_bootstrap_rpc);
     m_disable_dns_checkpoints = get_arg(vm, arg_disable_dns_checkpoints);
 
     epee::debug::g_test_dbg_lock_sleep() = command_line::get_arg(vm, arg_test_dbg_lock_sleep);

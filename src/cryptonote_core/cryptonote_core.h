@@ -837,6 +837,13 @@ namespace cryptonote
      bool allow_unsynced_mining() const { return m_allow_unsynced_mining; }
 
      /**
+      * @brief get whether bootstrap RPCs may bypass the not-synchronized busy guard
+      *
+      * @return whether the --allow-unsynced-bootstrap-rpc flag was set
+      */
+     bool allow_unsynced_bootstrap_rpc() const { return m_allow_unsynced_bootstrap_rpc; }
+
+     /**
       * @brief get the blockchain pruning seed
       *
       * @return the blockchain pruning seed
@@ -1104,6 +1111,7 @@ namespace cryptonote
 
      bool m_offline;
      bool m_allow_unsynced_mining;
+     bool m_allow_unsynced_bootstrap_rpc;
 
      std::shared_ptr<tools::Notify> m_block_rate_notify;
    };

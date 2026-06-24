@@ -1679,7 +1679,54 @@ skip:
     m_idle_peer_kicker.do_call(boost::bind(&t_cryptonote_protocol_handler<t_core>::kick_idle_peers, this));
     m_standby_checker.do_call(boost::bind(&t_cryptonote_protocol_handler<t_core>::check_standby_peers, this));
     m_sync_search_checker.do_call(boost::bind(&t_cryptonote_protocol_handler<t_core>::update_sync_search, this));
+    recheck_bootstrap_synchronization();
     return m_core.on_idle();
+  }
+  //------------------------------------------------------------------------------------------------------------------------
+  template<class t_core>
+  bool t_cryptonote_protocol_handler<t_core>::recheck_bootstrap_synchronization()
+  {
+    // Self-heal for the "tallest node from genesis" case. The one-time sync
+    // event (handshake-at-equal-height, or download-completion) can be missed,
+    // leaving m_synchronized stuck false forever even though we are demonstrably
+    // caught up with the network. That permanently blocks the not-synchronized
+    // busy guard (wallet tx broadcast, miner RPC) on an otherwise healthy node.
+    // Here we re-evaluate steady state and flip the flag exactly as the normal
+    // sync-complete path does, via on_connection_synchronized() (idempotent).
+    // Consensus and block/tx validation are untouched; this only corrects the
+    // readiness flag, and only when we are genuinely at the network tip.
+    if (m_synchronized || no_sync())
+      return true;
+
+    const uint64_t current_height = m_core.get_current_blockchain_height();
+    const uint64_t target_height = m_core.get_target_blockchain_height();
+
+    // Must be at least as tall as the tallest height any peer has advertised,
+    // and that target must be real (a peer told us about it).
+    if (target_height == 0 || current_height < target_height)
+      return true;
+
+    // Require at least one fully-handshaked peer in normal state, and no peer
+    // mid block-download. This distinguishes "caught up with a live network"
+    // from "alone on genesis with nothing to compare against".
+    bool have_normal_peer = false;
+    bool any_synchronizing = false;
+    m_p2p->for_each_connection([&](cryptonote_connection_context& context, nodetool::peerid_type peer_id, uint32_t support_flags)->bool
+    {
+      if (context.m_state == cryptonote_connection_context::state_normal)
+        have_normal_peer = true;
+      else if (context.m_state == cryptonote_connection_context::state_synchronizing)
+        any_synchronizing = true;
+      return true;
+    });
+
+    if (have_normal_peer && !any_synchronizing)
+    {
+      MGINFO_YELLOW("Bootstrap self-heal: blockchain height " << current_height << " >= target " << target_height
+        << ", peers in normal state with no active download. Marking node synchronized.");
+      on_connection_synchronized();
+    }
+    return true;
   }
   //------------------------------------------------------------------------------------------------------------------------
   template<class t_core>

@@ -170,6 +170,7 @@ namespace cryptonote
     : m_core(cr)
     , m_p2p(p2p)
     , m_was_bootstrap_ever_used(false)
+    , m_logged_bootstrap_rpc_bypass(false)
     , disable_rpc_ban(false)
   {}
   //------------------------------------------------------------------------------------------------------------------------------
@@ -383,6 +384,26 @@ namespace cryptonote
       return false;
     }
     return true;
+  }
+  //------------------------------------------------------------------------------------------------------------------------------
+  bool core_rpc_server::bootstrap_rpc_ready()
+  {
+    if (check_core_ready())
+      return true;
+    if (m_core.allow_unsynced_bootstrap_rpc())
+    {
+      // getblocktemplate/getminerdata are polled continuously, so log only once
+      // per run rather than on every bypassed call.
+      if (!m_logged_bootstrap_rpc_bypass)
+      {
+        m_logged_bootstrap_rpc_bypass = true;
+        MGINFO_RED("RPC proceeding while daemon reports not-synchronized because --allow-unsynced-bootstrap-rpc is set. "
+          "Validation is unchanged; this only bypasses the not-synchronized busy guard. "
+          "Intended only for bootstrapping a brand-new network.");
+      }
+      return true;
+    }
+    return false;
   }
   //------------------------------------------------------------------------------------------------------------------------------
   bool core_rpc_server::add_host_fail(const connection_context *ctx, unsigned int score)
@@ -1241,7 +1262,10 @@ namespace cryptonote
       }
       else
       {
-        CHECK_CORE_READY();
+        // local/trusted relay: honor --allow-unsynced-bootstrap-rpc so a
+        // not-yet-synchronized bootstrap node can still broadcast a tx. The
+        // tx is fully validated below regardless.
+        if (!bootstrap_rpc_ready()) { res.status = CORE_RPC_STATUS_BUSY; return true; }
       }
     }
     else
@@ -1820,7 +1844,7 @@ namespace cryptonote
     if (use_bootstrap_daemon_if_necessary<COMMAND_RPC_GETBLOCKTEMPLATE>(invoke_http_mode::JON_RPC, "getblocktemplate", req, res, r))
       return r;
 
-    if(!check_core_ready())
+    if(!bootstrap_rpc_ready())
     {
       error_resp.code = CORE_RPC_ERROR_CODE_CORE_BUSY;
       error_resp.message = "Core is busy";
@@ -1911,7 +1935,7 @@ namespace cryptonote
   //------------------------------------------------------------------------------------------------------------------------------
   bool core_rpc_server::on_getminerdata(const COMMAND_RPC_GETMINERDATA::request& req, COMMAND_RPC_GETMINERDATA::response& res, epee::json_rpc::error& error_resp, const connection_context *ctx)
   {
-    if(!check_core_ready())
+    if(!bootstrap_rpc_ready())
     {
       error_resp.code = CORE_RPC_ERROR_CODE_CORE_BUSY;
       error_resp.message = "Core is busy";
@@ -2165,7 +2189,7 @@ namespace cryptonote
         return false;
       }
     }
-    CHECK_CORE_READY();
+    if (!bootstrap_rpc_ready()) { res.status = CORE_RPC_STATUS_BUSY; return true; }
     if(req.size()!=1)
     {
       error_resp.code = CORE_RPC_ERROR_CODE_WRONG_PARAM;

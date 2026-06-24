@@ -1698,32 +1698,36 @@ skip:
     if (m_synchronized || no_sync())
       return true;
 
+    // Note: we deliberately do NOT gate on get_target_blockchain_height(). On a
+    // node that has been the tallest since genesis, the aggregate target is
+    // never set and stays 0 (observed on the live launch seed), which is exactly
+    // the node this self-heal exists for. Instead we read each peer's advertised
+    // height directly: if no connected peer claims to be ahead of us, we are at
+    // the tip by definition.
     const uint64_t current_height = m_core.get_current_blockchain_height();
-    const uint64_t target_height = m_core.get_target_blockchain_height();
 
-    // Must be at least as tall as the tallest height any peer has advertised,
-    // and that target must be real (a peer told us about it).
-    if (target_height == 0 || current_height < target_height)
-      return true;
-
-    // Require at least one fully-handshaked peer in normal state, and no peer
-    // mid block-download. This distinguishes "caught up with a live network"
-    // from "alone on genesis with nothing to compare against".
+    // Require at least one fully-handshaked peer in normal state, no peer mid
+    // block-download, and no peer advertising a height above ours. Together that
+    // means "caught up with a live network", as opposed to "alone on genesis
+    // with nothing to compare against".
     bool have_normal_peer = false;
     bool any_synchronizing = false;
+    bool any_peer_ahead = false;
     m_p2p->for_each_connection([&](cryptonote_connection_context& context, nodetool::peerid_type peer_id, uint32_t support_flags)->bool
     {
       if (context.m_state == cryptonote_connection_context::state_normal)
         have_normal_peer = true;
       else if (context.m_state == cryptonote_connection_context::state_synchronizing)
         any_synchronizing = true;
+      if (context.m_remote_blockchain_height > current_height)
+        any_peer_ahead = true;
       return true;
     });
 
-    if (have_normal_peer && !any_synchronizing)
+    if (have_normal_peer && !any_synchronizing && !any_peer_ahead)
     {
-      MGINFO_YELLOW("Bootstrap self-heal: blockchain height " << current_height << " >= target " << target_height
-        << ", peers in normal state with no active download. Marking node synchronized.");
+      MGINFO_YELLOW("Bootstrap self-heal: blockchain height " << current_height
+        << ", a peer is in normal state, none are ahead or downloading. Marking node synchronized.");
       on_connection_synchronized();
     }
     return true;

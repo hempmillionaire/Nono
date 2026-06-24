@@ -1327,7 +1327,17 @@ namespace cryptonote
   bool core_rpc_server::on_start_mining(const COMMAND_RPC_START_MINING::request& req, COMMAND_RPC_START_MINING::response& res, const connection_context *ctx)
   {
     RPC_TRACKER(start_mining);
-    CHECK_CORE_READY();
+    if (!check_core_ready())
+    {
+      if (!m_core.allow_unsynced_mining())
+      {
+        res.status = CORE_RPC_STATUS_BUSY;
+        return true;
+      }
+      MGINFO_RED("start_mining: daemon is not synchronized, but --allow-unsynced-mining is set, so mining will proceed. "
+        "Any blocks mined now may be on a minority chain and orphaned if a longer chain exists. "
+        "This is intended only for bootstrapping a brand-new network.");
+    }
     cryptonote::address_parse_info info;
     if(!get_account_address_from_str(info, nettype(), req.miner_address))
     {

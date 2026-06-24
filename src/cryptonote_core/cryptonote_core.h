@@ -830,6 +830,13 @@ namespace cryptonote
      bool offline() const { return m_offline; }
 
      /**
+      * @brief get whether mining is allowed while the daemon is not synchronized
+      *
+      * @return whether the --allow-unsynced-mining flag was set
+      */
+     bool allow_unsynced_mining() const { return m_allow_unsynced_mining; }
+
+     /**
       * @brief get the blockchain pruning seed
       *
       * @return the blockchain pruning seed
@@ -1096,6 +1103,7 @@ namespace cryptonote
      boost::mutex m_update_mutex;
 
      bool m_offline;
+     bool m_allow_unsynced_mining;
 
      std::shared_ptr<tools::Notify> m_block_rate_notify;
    };

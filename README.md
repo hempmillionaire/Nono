@@ -13,6 +13,13 @@ Portions Copyright (c) 2012-2013 The Cryptonote developers
 
 NONO is a fair-launch, CPU-mined privacy currency. It is a fork of Monero with an independent network, a separate emission curve, and no insider allocations. Privacy properties, the RandomX proof-of-work, and the broader Cryptonote machinery are inherited from Monero unchanged.
 
+## Official Links
+
+- 🌐 **Website:** https://nonoprivacy.com
+- 𝕏 **X:** https://x.com/nonocoin
+- 💬 **Discord:** https://discord.gg/Tuwt6TAbJw
+- 📢 **Telegram:** https://t.me/nonoprivacy
+
 - **Total emission target:** 88,888,888 NONO (asymptotic, pre-tail)
 - **Block time:** 60 seconds
 - **Decimals:** 10
@@ -62,10 +69,15 @@ This software inherits Monero's BSD 3-Clause license. See [LICENSE](LICENSE) for
 ## Contributing
 
 NONO is a small project. The repository on GitHub is the source of truth, and pull requests against `master` are welcome.
-Domain https://nonoprivacy.com 
-x: https://x.com/nonocoin 
-discord: https://discord.gg/Tuwt6TAbJw
-telegram channel: https://t.me/nonoprivacy
+
+## Community
+
+- Website: https://nonoprivacy.com
+- X: https://x.com/nonocoin
+- Discord: https://discord.gg/Tuwt6TAbJw
+- Telegram: https://t.me/nonoprivacy
+
+Questions, development discussion, and community support happen in Discord.
 
 If you are submitting a change that touches consensus (anything in `cryptonote_config.h`, the emission formula, the genesis transaction, or protocol versions), please flag it explicitly in the PR description. NONO's policy is to stop touching consensus once the chain is live unless tests prove a change is required.
 

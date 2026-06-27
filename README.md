@@ -61,7 +61,11 @@ This software inherits Monero's BSD 3-Clause license. See [LICENSE](LICENSE) for
 
 ## Contributing
 
-NONO is a small project. The repository on GitHub is the source of truth, and pull requests against `master` are welcome. There is no Discord, no Telegram, no announcement listserv yet — chain comes first, social later.
+NONO is a small project. The repository on GitHub is the source of truth, and pull requests against `master` are welcome.
+Domain https://nonoprivacy.com 
+x: https://x.com/nonocoin 
+discord: https://discord.gg/Tuwt6TAbJw
+telegram channel: https://t.me/nonoprivacy
 
 If you are submitting a change that touches consensus (anything in `cryptonote_config.h`, the emission formula, the genesis transaction, or protocol versions), please flag it explicitly in the PR description. NONO's policy is to stop touching consensus once the chain is live unless tests prove a change is required.
 
